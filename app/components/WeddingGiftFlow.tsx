@@ -53,7 +53,7 @@ export default function WeddingGiftFlow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           montoRegalo: montoNum,
-          montoComision: comision,
+          montoComisionMP: comision,
           mensaje,
         }),
       });
