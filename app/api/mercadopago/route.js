@@ -25,17 +25,11 @@ export async function POST(request) {
       body: {
         items: [
           {
-            title: 'Regalo de boda - B & A',
+            title: 'Regalo de boda - B & A + Comisión Mercado Pago',
             quantity: 1,
-            unit_price: Number(montoRegalo),
-          },
-          {
-            title: 'Comisión - Mercado Pago',
-            quantity: 1,
-            unit_price: Number(montoComisionMP),
+            unit_price: Number(montoRegalo) + Number(montoComisionMP),
           },
         ],
-
         // ✅ URLs reales (IMPORTANTE en producción)
         back_urls: {
           success: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
