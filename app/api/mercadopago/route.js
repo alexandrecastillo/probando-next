@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // Importa el SDK de Mercado Pago
-import mercadopago from 'mercadopago';
+const mercadopago = require('mercadopago');
 
 // Lee el ACCESS_TOKEN desde variables de entorno
 mercadopago.configure({
