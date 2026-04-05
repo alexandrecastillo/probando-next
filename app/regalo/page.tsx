@@ -1,6 +1,5 @@
-import dynamic from "next/dynamic";
-
-const WeddingGiftFlow = dynamic(() => import("../components/WeddingGiftFlow"), { ssr: false });
+"use client";
+import WeddingGiftFlow from "../components/WeddingGiftFlow";
 
 export default function RegaloPage() {
   return <WeddingGiftFlow />;
