@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // Importa el SDK de Mercado Pago
+// @ts-ignore
 const mercadopago = require('mercadopago');
 
 // Lee el ACCESS_TOKEN desde variables de entorno
@@ -26,7 +27,7 @@ export async function POST(request) {
         },
         {
           title: "Comisión Mercado Pago",
-          unit_price: montoComisionMP,
+          unit_price: Number(montoComisionMP),
           quantity: 1,
         }
       ],
