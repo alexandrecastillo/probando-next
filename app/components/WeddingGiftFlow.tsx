@@ -6,10 +6,11 @@ import { ChevronLeft, Check, Edit2 } from "lucide-react";
 const SERVICE_FEE_RATE = 0.000339;
 
 function formatNumber(num: number): string {
-  return num.toLocaleString("es-PE", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
+  const str = num.toString();
+  if (str.length <= 4) return str;
+  if (str.length === 5) return str.slice(0, 2) + ',' + str.slice(2);
+  if (str.length === 6) return str.slice(0, 3) + ',' + str.slice(3);
+  return str; // Though max is 6
 }
 
 function calculateServiceFee(amount: number): number {
@@ -134,6 +135,26 @@ export default function WeddingGiftFlow() {
     goToStep(1, true);
   };
 
+  const handleAmountChange = useCallback((value: string) => {
+    // Remove commas and non-numeric characters, limit to 6 digits
+    const numericValue = value.replace(/[^\d]/g, "").slice(0, 6);
+    setFormData((prev) => ({ ...prev, amount: numericValue }));
+  }, []);
+
+  const handleAmountKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow numeric keys and navigation
+    const allowedKeys = [
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Tab",
+    ];
+    if (!/^\d$/.test(e.key) && !allowedKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-[390px] min-h-[720px] bg-background rounded-[36px] border border-border overflow-hidden flex flex-col shadow-[0_28px_80px_rgba(74,74,74,0.08)]">
@@ -212,6 +233,10 @@ function Step1Form({
   onContinue: () => void;
   error: string;
 }) {
+  const displayAmount = formData.amount
+    ? formatNumber(Number(formData.amount))
+    : "";
+
   return (
     <>
       <div className="flex-1 flex flex-col justify-center py-8">
@@ -232,7 +257,7 @@ function Step1Form({
             <input
               type="text"
               inputMode="numeric"
-              value={formData.amount}
+              value={displayAmount}
               onChange={(e) => handleAmountChange(e.target.value)}
               onKeyDown={handleAmountKeyDown}
               className="text-6xl font-semibold text-foreground bg-transparent border-none outline-none text-center w-36 placeholder:text-foreground/30"
@@ -289,7 +314,8 @@ function Step1Form({
 
         <button
           onClick={onContinue}
-          className="w-full py-4 bg-primary text-primary-foreground rounded-3xl font-semibold text-lg transition-all hover:opacity-90 active:scale-[0.98]"
+          disabled={amountNum <= 0}
+          className="w-full py-4 bg-primary text-primary-foreground rounded-3xl font-semibold text-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ fontFamily: "var(--font-handwriting)" }}
         >
           Continuar
