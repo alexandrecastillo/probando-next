@@ -208,6 +208,8 @@ export default function WeddingGiftFlow() {
               total={total}
               onContinue={handleContinue}
               onEdit={() => goToStep(1, true)}
+              error={error}
+              loading={loading}
             />
           )}
 
@@ -236,6 +238,7 @@ function Step1Form({
   const displayAmount = formData.amount
     ? formatNumber(Number(formData.amount))
     : "";
+  const amountNum = Number(formData.amount) || 0;
 
   return (
     <>
@@ -332,6 +335,8 @@ function Step2Summary({
   total,
   onContinue,
   onEdit,
+  error,
+  loading,
 }: {
   formData: FormData;
   amountNum: number;
@@ -339,6 +344,8 @@ function Step2Summary({
   total: number;
   onContinue: () => void;
   onEdit: () => void;
+  error: string;
+  loading: boolean;
 }) {
   return (
     <>
@@ -376,14 +383,6 @@ function Step2Summary({
               Editar
             </button>
           </div>
-          <button
-            onClick={onEdit}
-            className="inline-flex items-center gap-2 rounded-3xl border border-border bg-muted px-4 py-3 text-sm text-foreground/80 hover:bg-muted/90 transition-colors"
-            style={{ fontFamily: "var(--font-handwriting)" }}
-          >
-            <Edit2 className="w-4 h-4" />
-            Editar
-          </button>
         </div>
       </div>
 
