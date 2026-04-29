@@ -10,6 +10,7 @@ export default function WeddingGiftFlow() {
   const [nameInput, setNameInput] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [charCount, setCharCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const measureSpanRef = useRef<HTMLSpanElement>(null);
@@ -93,7 +94,11 @@ export default function WeddingGiftFlow() {
       if (numericAmount <= 0) {
         return;
       }
-      setStep(2);
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setStep(2);
+      }, 2000);
     } else if (currentStep === 2) {
       const name = nameInput.trim();
       const message = messageInput.trim();
@@ -114,9 +119,22 @@ export default function WeddingGiftFlow() {
 
   return (
     <div className="h-screen overflow-hidden bg-fondo font-sans flex items-center justify-center">
+      {/* Loading Screen */}
+      {isLoading && (
+        <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
+          <div className="flex flex-col items-center gap-6">
+            <div className="relative w-16 h-16">
+              <div className="absolute inset-0 border-4 border-primario/20 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-primario border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p className="text-primario text-lg font-medium">Procesando...</p>
+          </div>
+        </div>
+      )}
+
       {/* Step 1 */}
-      {step === 1 && (
-        <div className="flex flex-col h-full max-w-md mx-auto w-full">
+      {!isLoading && step === 1 && (
+      <div className="flex flex-col h-full max-w-md mx-auto w-full">
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <div className="text-center">
@@ -209,8 +227,8 @@ export default function WeddingGiftFlow() {
       )}
 
       {/* Step 2 */}
-      {step === 2 && (
-        <div className="flex flex-col h-full max-w-md mx-auto w-full">
+      {!isLoading && step === 2 && (
+      <div className="flex flex-col h-full max-w-md mx-auto w-full">
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <button
