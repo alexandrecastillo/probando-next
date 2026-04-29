@@ -161,7 +161,7 @@ export default function WeddingGiftFlow() {
                       value={amount}
                       onChange={handleMoneyInput}
                       onKeyDown={handleMoneyKeyDown}
-                      onKeyPress={handleMoneyKeyPress}
+                      onKeyUp={handleMoneyKeyPress}
                       onFocus={handleMoneyFocus}
                       onBlur={handleMoneyBlur}
                       className={`text-6xl font-bold text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
@@ -233,7 +233,7 @@ export default function WeddingGiftFlow() {
               className="absolute left-6 top-1/2 -translate-y-1/2"
             >
               <svg
-                className="w-6 h-6 text-gray-700"
+                className="w-6 h-6 text-primario"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -331,3 +331,11 @@ export default function WeddingGiftFlow() {
     </div>
   );
 }
+
+// 1. El cursor sobre el input del monto
+// 2. El formato del monto en la confirmacion
+// 3. Deshabilitar el boton continuar en el paso 1 si el monto es 0 o menor
+// 4. El boton de volver en el paso 2 debe ser de color primario y debe figurar el procesar
+// 5. La conexion con mercado pago
+// 6. Configurar las paginas de exito y error
+// 7. Configurar urls para redireccionar a canva
