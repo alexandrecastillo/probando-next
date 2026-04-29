@@ -147,7 +147,9 @@ export default function WeddingGiftFlow() {
                       onKeyPress={handleMoneyKeyPress}
                       onFocus={handleMoneyFocus}
                       onBlur={handleMoneyBlur}
-                      className="text-6xl font-bold text-center text-secundario bg-transparent border-none outline-none focus:ring-0 p-0"
+                      className={`text-6xl font-bold text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
+                        numericAmount > 0 ? "text-primario" : "text-secundario"
+                      }`}
                     />
                     <span
                       ref={measureSpanRef}
