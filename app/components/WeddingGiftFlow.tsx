@@ -241,8 +241,8 @@ function Step1Form({
   onContinue: () => void;
   error: string;
   amountNum: number;
-  inputRef: React.RefObject<HTMLInputElement>;
-  measureSpanRef: React.RefObject<HTMLSpanElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  measureSpanRef: React.RefObject<HTMLSpanElement | null>;
 }) {
   const displayAmount = formData.amount
     ? parseInt(formData.amount).toLocaleString("es-PE")
