@@ -14,7 +14,6 @@ const geistMono = Geist_Mono({
 
 const playwriteGB = Playwrite_GB_S({
   variable: "--font-handwriting",
-  subsets: ["latin"],
   weight: ["100", "200", "300", "400"],
 });
 
