@@ -133,8 +133,7 @@ export default function WeddingGiftFlow() {
       )}
 
       {/* Step 1 */}
-      {!isLoading && step === 1 && (
-      <div className="flex flex-col h-full max-w-md mx-auto w-full">
+      <div className={`flex flex-col h-full max-w-md mx-auto w-full ${step !== 1 || isLoading ? "hidden" : ""}`}>
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <div className="text-center">
@@ -223,12 +222,10 @@ export default function WeddingGiftFlow() {
               Continuar
             </button>
           </div>
-        </div>
-      )}
-
+      </div>
+      
       {/* Step 2 */}
-      {!isLoading && step === 2 && (
-      <div className="flex flex-col h-full max-w-md mx-auto w-full">
+      <div  className={`flex flex-col h-full max-w-md mx-auto w-full ${step !== 2 || isLoading ? "hidden" : ""}`}>
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <button
@@ -330,8 +327,7 @@ export default function WeddingGiftFlow() {
               Continuar
             </button>
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
