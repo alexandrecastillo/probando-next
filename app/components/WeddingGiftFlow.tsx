@@ -183,7 +183,7 @@ export default function WeddingGiftFlow() {
       )}
 
       {/* Step 1 */}
-      <div className={`flex flex-col h-full max-w-md mx-auto w-full relative pb-28 ${step !== 1 || isLoading ? "hidden" : ""}`}>
+      <div className={`flex flex-col h-full max-w-md mx-auto w-full ${step !== 1 || isLoading ? "hidden" : ""}`}>
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <div className="text-center">
@@ -263,7 +263,7 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Bottom Button */}
-          <div className="fixed bottom-0 left-0 right-0 px-6 pb-safe py-4 border-t border-gray-100 bg-fondo z-10">
+          <div className="px-6 pb-safe py-4 border-t border-gray-100">
             <button
               type="button"
               onClick={() => handleContinue(1)}
@@ -276,7 +276,7 @@ export default function WeddingGiftFlow() {
       </div>
       
       {/* Step 2 */}
-      <div  className={`flex flex-col h-full max-w-md mx-auto w-full relative pb-28 ${step !== 2 || isLoading ? "hidden" : ""}`}>
+      <div  className={`flex flex-col h-full max-w-md mx-auto w-full ${step !== 2 || isLoading ? "hidden" : ""}`}>
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <button
@@ -370,7 +370,7 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Bottom Button */}
-          <div className="fixed bottom-0 left-0 right-0 px-6 pb-safe py-4 border-t border-gray-100 bg-fondo z-10">
+          <div className="px-6 pb-safe py-4 border-t border-gray-100">
             <button
               onClick={() => handleContinue(2)}
               className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm bg-button text-lg text-texto-button cursor-pointer"
