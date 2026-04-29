@@ -161,7 +161,7 @@ export default function WeddingGiftFlow() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-[390px] min-h-[720px] bg-background rounded-[36px] border-2 border-muted overflow-hidden flex flex-col shadow-[0_28px_80px_rgba(104,95,93,0.15)]">
+      <div className="w-full max-w-97.5 min-h-180 bg-background rounded-[36px] border-2 border-muted overflow-hidden flex flex-col shadow-[0_28px_80px_rgba(104,95,93,0.15)]">
         {/* Header */}
         <header className="pt-8 pb-6 px-6 relative">
           {step > 1 && step < 3 && (
@@ -241,8 +241,8 @@ function Step1Form({
   onContinue: () => void;
   error: string;
   amountNum: number;
-  inputRef: React.RefObject<HTMLInputElement>;
-  measureSpanRef: React.RefObject<HTMLSpanElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  measureSpanRef: React.RefObject<HTMLSpanElement | null>;
 }) {
   const displayAmount = formData.amount
     ? parseInt(formData.amount).toLocaleString("es-PE")
@@ -276,7 +276,7 @@ function Step1Form({
               />
             </div>
           </div>
-          <p className="text-sm text-foreground/50 mt-6 max-w-[280px] mx-auto font-light">
+          <p className="text-sm text-foreground/50 mt-6 max-w-70 mx-auto font-light">
             El monto ingresado es el total que deseas regalar. El costo de
             servicio se calculará en la siguiente pantalla.
           </p>
