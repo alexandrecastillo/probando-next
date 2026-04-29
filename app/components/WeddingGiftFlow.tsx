@@ -18,6 +18,8 @@ export default function WeddingGiftFlow() {
   const numericAmount = parseInt(amount.replace(/,/g, "") || "0");
   const serviceFee = Math.round(numericAmount * SERVICE_FEE_RATE * 100) / 100;
   const total = numericAmount + serviceFee;
+  const formattedAmount = numericAmount.toLocaleString("es-PE");
+  const isStep1ContinueDisabled = numericAmount <= 0;
 
   const adjustInputWidth = useCallback(() => {
     if (!inputRef.current || !measureSpanRef.current) return;
@@ -71,9 +73,12 @@ export default function WeddingGiftFlow() {
   };
 
   const handleMoneyFocus = () => {
-    if (inputRef.current?.value === "0") {
-      inputRef.current.select();
-    }
+    const input = inputRef.current;
+    if (!input) return;
+
+    const value = input.value || "";
+    const position = value.length;
+    input.setSelectionRange(position, position);
   };
 
   const handleMoneyBlur = () => {
@@ -83,42 +88,87 @@ export default function WeddingGiftFlow() {
     }
   };
 
+  useEffect(() => {
+    if (step !== 1) return;
+    const input = inputRef.current;
+    if (!input) return;
+
+    input.focus();
+    const value = input.value || "";
+    const position = value.length;
+
+    window.requestAnimationFrame(() => {
+      input.setSelectionRange(position, position);
+    });
+  }, [step]);
+
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value.slice(0, 150);
     setMessageInput(value);
     setCharCount(value.length);
   };
 
+  const createPreference = async () => {
+    const name = nameInput.trim();
+    const message = messageInput.trim();
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/mercadopago', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mensaje: message,
+          montoRegalo: String(numericAmount),
+          montoComisionMP: String(serviceFee),
+          nombre: name,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.init_point) {
+        throw new Error(data.error || 'No se pudo crear la preferencia')
+      }
+
+      window.location.href = data.init_point
+    } catch (error) {
+      console.error('Error al crear preferencia de Mercado Pago:', error)
+      alert('Ocurrió un error al procesar el pago. Intenta de nuevo más tarde.')
+      setIsLoading(false)
+    }
+  }
+
   const handleContinue = (currentStep: 1 | 2) => {
     if (currentStep === 1) {
       if (numericAmount <= 0) {
-        return;
+        return
       }
-      setIsLoading(true);
+      setIsLoading(true)
       setTimeout(() => {
-        setIsLoading(false);
-        setStep(2);
-      }, 1000);
+        setIsLoading(false)
+        setStep(2)
+      }, 1000)
     } else if (currentStep === 2) {
-      const name = nameInput.trim();
-      const message = messageInput.trim();
-      console.log("Monto:", numericAmount);
-      console.log("De parte de:", name);
-      console.log("Mensaje:", message);
-      alert(
-        `Monto: S/ ${numericAmount.toLocaleString("es-PE")}\nDe: ${name || "Anónimo"}\nMensaje: ${message || "Sin mensaje"}`
-      );
+      createPreference()
     }
   };
 
   const handleBack = (currentStep: 1 | 2) => {
     if (currentStep === 2) {
-      setStep(1);
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setStep(1);
+      }, 600);
     }
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-fondo font-sans flex items-center justify-center">
+    <div className="min-h-dvh overflow-hidden bg-fondo font-sans flex items-center justify-center">
       {/* Loading Screen */}
       {isLoading && (
         <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
@@ -133,7 +183,7 @@ export default function WeddingGiftFlow() {
       )}
 
       {/* Step 1 */}
-      <div className={`flex flex-col h-full max-w-md mx-auto w-full ${step !== 1 || isLoading ? "hidden" : ""}`}>
+      <div className={`flex flex-col h-full max-w-md mx-auto w-full relative pb-28 ${step !== 1 || isLoading ? "hidden" : ""}`}>
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <div className="text-center">
@@ -213,10 +263,11 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Bottom Button */}
-          <div className="px-6 py-4 border-t border-gray-100">
+          <div className="fixed bottom-0 left-0 right-0 px-6 pb-safe py-4 border-t border-gray-100 bg-fondo z-10">
             <button
+              type="button"
               onClick={() => handleContinue(1)}
-              disabled={numericAmount <= 0}
+              disabled={isStep1ContinueDisabled}
               className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm bg-button text-lg text-texto-button cursor-pointer disabled:cursor-not-allowed disabled:bg-button-deshabilitado disabled:text-texto-button-deshabilitado"
             >
               Continuar
@@ -225,7 +276,7 @@ export default function WeddingGiftFlow() {
       </div>
       
       {/* Step 2 */}
-      <div  className={`flex flex-col h-full max-w-md mx-auto w-full ${step !== 2 || isLoading ? "hidden" : ""}`}>
+      <div  className={`flex flex-col h-full max-w-md mx-auto w-full relative pb-28 ${step !== 2 || isLoading ? "hidden" : ""}`}>
           {/* Header */}
           <div className="relative px-6 pt-8 pb-6">
             <button
@@ -265,7 +316,7 @@ export default function WeddingGiftFlow() {
                     S/
                   </span>
                   <span className="text-5xl font-bold text-center text-primario py-4">
-                    {numericAmount}
+                    {formattedAmount}
                   </span>
                 </div>
               </div>
@@ -319,12 +370,12 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Bottom Button */}
-          <div className="px-6 py-4 border-t border-gray-100">
+          <div className="fixed bottom-0 left-0 right-0 px-6 pb-safe py-4 border-t border-gray-100 bg-fondo z-10">
             <button
               onClick={() => handleContinue(2)}
               className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm bg-button text-lg text-texto-button cursor-pointer"
             >
-              Continuar
+              Procesar
             </button>
           </div>
       </div>
@@ -335,7 +386,7 @@ export default function WeddingGiftFlow() {
 // 1. El cursor sobre el input del monto
 // 2. El formato del monto en la confirmacion
 // 3. Deshabilitar el boton continuar en el paso 1 si el monto es 0 o menor
-// 4. El boton de volver en el paso 2 debe ser de color primario y debe figurar el procesar
+// 4. Al volver del paso 2 debe figurar el procesar loading
 // 5. La conexion con mercado pago
 // 6. Configurar las paginas de exito y error
 // 7. Configurar urls para redireccionar a canva

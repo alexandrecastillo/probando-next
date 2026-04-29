@@ -7,6 +7,7 @@ const client = new MercadoPagoConfig({
 
 export async function POST(request) {
   try {
+    const url = new URL(request.url)
     const body = await request.json()
     const { mensaje, montoRegalo, montoComisionMP } = body
 
@@ -18,41 +19,41 @@ export async function POST(request) {
       )
     }
 
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL || `${url.protocol}//${url.host}`
+
     const preference = new Preference(client)
 
-    // ✅ Crear preferencia correctamente
     const response = await preference.create({
       body: {
         items: [
           {
-            title: 'Regalo Boda + Comisión Mercado Pago',
+            title: 'Regalo de boda + comisión Mercado Pago',
+            description: mensaje || 'Regalo para Briana y Alexandre',
             quantity: 1,
             unit_price: Number(montoRegalo) + Number(montoComisionMP),
           },
         ],
-        // ✅ URLs reales (IMPORTANTE en producción)
         back_urls: {
-          success: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
-          failure: `${process.env.NEXT_PUBLIC_BASE_URL}/failure`,
-          pending: `${process.env.NEXT_PUBLIC_BASE_URL}/pending`,
+          success: `${baseUrl}/success`,
+          failure: `${baseUrl}/failure`,
+          pending: `${baseUrl}/pending`,
         },
-
         auto_return: 'approved',
-
-        // ✅ Opcional pero PRO
         metadata: {
           mensaje: mensaje || '',
+          montoRegalo: montoRegalo.toString(),
+          montoComisionMP: montoComisionMP.toString(),
         },
       },
     })
 
     return NextResponse.json({
       preference_id: response.id,
-      init_point: response.init_point, // 🔥 ESTE ES EL QUE USAS PARA REDIRIGIR
+      init_point: response.init_point,
     })
   } catch (error) {
     console.error('Error creando preferencia:', error)
-
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

@@ -68,6 +68,12 @@
   .focus-ring-primario {
     @apply focus:ring-[var(--primario)];
   }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
 }
 
 body {
