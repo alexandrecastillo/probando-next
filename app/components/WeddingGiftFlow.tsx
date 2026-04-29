@@ -98,7 +98,7 @@ export default function WeddingGiftFlow() {
       setTimeout(() => {
         setIsLoading(false);
         setStep(2);
-      }, 1500);
+      }, 1000);
     } else if (currentStep === 2) {
       const name = nameInput.trim();
       const message = messageInput.trim();
