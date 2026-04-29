@@ -10,6 +10,16 @@
   --card: #FFF1ED;
   --card-foreground: #685F5D;
   --border: #EBDEDB;
+  
+  /* Custom colors for the design */
+  --fondo: #FFF1ED;
+  --fondo-secundario: #EBDEDB;
+  --primario: #685F5D;
+  --secundario: #BCACA8;
+  --button: #C58689;
+  --button-deshabilitado: #E6C7C9;
+  --texto-button: #FFF1ED;
+  --texto-button-deshabilitado: #9A7A7C;
 }
 
 @theme inline {
@@ -25,6 +35,39 @@
   --font-sans: var(--font-handwriting);
   --font-mono: var(--font-geist-mono);
   --font-handwriting: var(--font-handwriting);
+}
+
+@layer utilities {
+  .bg-fondo {
+    @apply bg-[var(--fondo)];
+  }
+  .bg-fondo-secundario {
+    @apply bg-[var(--fondo-secundario)];
+  }
+  .text-primario {
+    @apply text-[var(--primario)];
+  }
+  .text-secundario {
+    @apply text-[var(--secundario)];
+  }
+  .placeholder-secundario::placeholder {
+    @apply text-[var(--secundario)];
+  }
+  .bg-button {
+    @apply bg-[var(--button)];
+  }
+  .bg-button-deshabilitado {
+    @apply bg-[var(--button-deshabilitado)];
+  }
+  .text-texto-button {
+    @apply text-[var(--texto-button)];
+  }
+  .text-texto-button-deshabilitado {
+    @apply text-[var(--texto-button-deshabilitado)];
+  }
+  .focus-ring-primario {
+    @apply focus:ring-[var(--primario)];
+  }
 }
 
 body {
