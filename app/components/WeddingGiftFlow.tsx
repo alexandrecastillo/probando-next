@@ -239,7 +239,7 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto px-6">
+          <div className="flex-1 px-6">
             <div className="flex flex-col min-h-full">
               {/* Monto display */}
               <div className="flex items-center justify-center py-4">
