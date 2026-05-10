@@ -229,7 +229,7 @@ export default function WeddingGiftFlow() {
               {/* Campos adicionales */}
               <div className="w-full space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-primario mb-2">
+                  <label className="block text-md font-medium text-primario mb-2">
                     De parte de
                   </label>
                   <input
@@ -243,13 +243,13 @@ export default function WeddingGiftFlow() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-primario mb-2">
-                    Mensaje
-                    <span className="text-primario text-xs">
+                  <label htmlFor="message" className="block text-md font-medium text-primario mb-2">
+                    Mensaje 
+                    <span className="text-secundario text-xs">
                       ({charCount}/150)
                     </span>
                   </label>
-                  <textarea
+                  <textarea id="message"
                     maxLength={150}
                     rows={3}
                     placeholder="Escribe un mensaje para los novios..."
@@ -263,7 +263,7 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Bottom Button */}
-          <div className="px-6 pb-safe py-4 border-t border-gray-100">
+          <div className="px-6 pb-safe mb-4 py-4 border-t border-gray-100">
             <button
               type="button"
               onClick={() => handleContinue(1)}
