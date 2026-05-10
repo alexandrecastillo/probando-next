@@ -263,7 +263,7 @@ export default function WeddingGiftFlow() {
           </div>
 
           {/* Bottom Button */}
-          <div className="px-6 pb-safe mb-4 py-4 border-t border-gray-100">
+          <div className="px-6 pb-safe mb-8 py-4 border-t border-gray-100">
             <button
               type="button"
               onClick={() => handleContinue(1)}
