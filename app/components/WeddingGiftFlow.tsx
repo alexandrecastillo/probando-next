@@ -244,7 +244,7 @@ export default function WeddingGiftFlow() {
 
                 <div>
                   <label htmlFor="message" className="block text-md font-medium text-primario mb-2">
-                    Mensaje 
+                    Mensaje{" "}
                     <span className="text-secundario text-xs">
                       ({charCount}/150)
                     </span>
