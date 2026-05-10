@@ -168,7 +168,7 @@ export default function WeddingGiftFlow() {
   };
 
   return (
-    <div className="min-h-dvh overflow-hidden bg-fondo font-sans flex items-center justify-center">
+    <div className="h-dvh overflow-hidden bg-fondo font-sans flex items-center justify-center">
       {/* Loading Screen */}
       {isLoading && (
         <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
