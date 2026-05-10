@@ -71,6 +71,13 @@
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  @supports not (-webkit-touch-callout: none) {
+    .pb-safe {
+      padding-bottom: 16px;
+    }
+  }
+
   .min-h-dvh {
     min-height: 100dvh;
   }
