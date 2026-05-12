@@ -40,6 +40,7 @@ export async function POST(request) {
           pending: `${baseUrl}/pending`,
         },
         auto_return: 'approved',
+        notification_url: `${baseUrl}/api/mercadopago/webhook`,
         metadata: {
           mensaje: mensaje || '',
           montoRegalo: montoRegalo.toString(),
