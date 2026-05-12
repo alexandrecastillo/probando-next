@@ -78,6 +78,10 @@
     }
   }
 
+  .font-monte-carlo {
+    font-family: var(--font-monte-carlo), Arial, Helvetica, sans-serif;
+  }
+
   .min-h-dvh {
     min-height: 100dvh;
   }
