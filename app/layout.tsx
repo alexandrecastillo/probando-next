@@ -25,6 +25,7 @@ const monteCarlo = MonteCarlo({
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400"],
 });
 
 
