@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playwrite_GB_S, MonteCarlo } from "next/font/google";
+import { Geist, Geist_Mono, Playwrite_GB_S, MonteCarlo, Poppins } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,6 +22,11 @@ const monteCarlo = MonteCarlo({
   weight: ["400"],
 });
 
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+});
+
 
 export const metadata: Metadata = {
   title: "Regalo de Boda - Briana y Alexandre",
@@ -36,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${playwriteGB.variable} ${monteCarlo.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playwriteGB.variable} ${monteCarlo.variable} ${poppins.variable} h-full antialiased`}
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

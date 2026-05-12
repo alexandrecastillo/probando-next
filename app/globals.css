@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FFF1ED;
+  --background: #f2f1eb;
   --foreground: #685F5D;
   --primary: #895457;
-  --primary-foreground: #FFF1ED;
+  --primary-foreground: #f2f1eb;
   --muted: #EBDEDB;
   --muted-foreground: #BCACA8;
   --card: #FFF1ED;
@@ -12,13 +12,13 @@
   --border: #EBDEDB;
   
   /* Custom colors for the design */
-  --fondo: #FFF1ED;
+  --fondo: #f2f1eb;
   --fondo-secundario: #EBDEDB;
   --primario: #685F5D;
   --secundario: #BCACA8;
   --button: #C58689;
   --button-deshabilitado: #E6C7C9;
-  --texto-button: #FFF1ED;
+  --texto-button: #f2f1eb;
   --texto-button-deshabilitado: #9A7A7C;
 }
 
@@ -32,7 +32,7 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
-  --font-sans: var(--font-handwriting);
+  --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
   --font-handwriting: var(--font-handwriting);
 }
@@ -90,5 +90,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-handwriting), Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
 }

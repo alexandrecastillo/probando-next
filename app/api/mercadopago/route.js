@@ -28,7 +28,7 @@ export async function POST(request) {
       body: {
         items: [
           {
-            title: 'Regalo de boda + comisión Mercado Pago',
+            title: 'Regalo de boda B&A + costo servicio pago en línea',
             description: mensaje || 'Regalo para Briana y Alexandre',
             quantity: 1,
             unit_price: Number(montoRegalo) + Number(montoComisionMP),
