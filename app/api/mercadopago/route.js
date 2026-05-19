@@ -34,6 +34,14 @@ export async function POST(request) {
             unit_price: Number(montoRegalo) + Number(montoComisionMP),
           },
         ],
+        payment_methods: {
+          excluded_payment_types: [
+            { id: 'ticket' },
+            { id: 'atm' },
+            { id: 'bank_transfer' },
+            { id: 'digital_wallet' },
+          ],
+        },
         back_urls: {
           success: `https://briana-alexandre.my.canva.site/wedding-of-briana-alexandre/gracias`,
           failure: `${baseUrl}/failure`,
