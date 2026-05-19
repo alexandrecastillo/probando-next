@@ -268,7 +268,7 @@ export default function WeddingGiftFlow() {
               type="button"
               onClick={() => handleContinue(1)}
               disabled={isStep1ContinueDisabled}
-              className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm bg-button text-lg text-texto-button cursor-pointer disabled:cursor-not-allowed disabled:bg-button-deshabilitado disabled:text-texto-button-deshabilitado"
+              className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer disabled:cursor-not-allowed disabled:bg-button-deshabilitado disabled:text-texto-button-deshabilitado"
             >
               Continuar
             </button>
@@ -353,7 +353,7 @@ export default function WeddingGiftFlow() {
                     De parte de
                   </label>
                   <p className="w-full px-4 py-3 bg-fondo-secundario rounded-xl text-primario outline-none text-ellipsis whitespace-nowrap">
-                    {nameInput || "Sin nombre"}
+                    {nameInput || "Anónimo"}
                   </p>
                 </div>
 
@@ -373,7 +373,7 @@ export default function WeddingGiftFlow() {
           <div className="px-6 pb-safe py-4 border-t border-gray-100">
             <button
               onClick={() => handleContinue(2)}
-              className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm bg-button text-lg text-texto-button cursor-pointer"
+              className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer"
             >
               Procesar
             </button>
