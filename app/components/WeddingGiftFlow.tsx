@@ -97,7 +97,11 @@ export default function WeddingGiftFlow() {
     const rate = 0.0329;
     const igv = 0.18;
     const fixed = 1.0;
-    const assume = 0.75;
+    var assume = 0.75;
+
+    if (net >= 400) {
+      assume = 0.5;
+    }
 
     // real commission
     const r = rate * (1 + igv);
