@@ -382,11 +382,3 @@ export default function WeddingGiftFlow() {
     </div>
   );
 }
-
-// 1. El cursor sobre el input del monto
-// 2. El formato del monto en la confirmacion
-// 3. Deshabilitar el boton continuar en el paso 1 si el monto es 0 o menor
-// 4. Al volver del paso 2 debe figurar el procesar loading
-// 5. La conexion con mercado pago
-// 6. Configurar las paginas de exito y error
-// 7. Configurar urls para redireccionar a canva
