@@ -9,10 +9,16 @@ const client = new MercadoPagoConfig({
 
 const paymentClient = new Payment(client);
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Clave secreta para validar webhooks (obténla de tu panel de MercadoPago)
 const WEBHOOK_SECRET = process.env.MP_WEBHOOK_SECRET;
+
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+
+  return new Resend(apiKey);
+};
 
 export async function POST(request) {
   try {
@@ -95,11 +101,13 @@ export async function POST(request) {
       });
 
       // Enviar email con Resend para todos los Estados del pago
-      await resend.emails.send({
-        from: 'Regalo de Boda <onboarding@resend.dev>', // Cambia esto por tu dominio verificado
-        to: process.env.NOTIFICATION_EMAIL || 'tuemail@example.com', // Email destinatario
-        subject: `Pago ${payment.status} - Seguimiento de regalo de boda`,
-        html: `
+      const resendClient = getResendClient();
+      if (resendClient) {
+        await resendClient.emails.send({
+          from: 'Regalo de Boda <onboarding@resend.dev>', // Cambia esto por tu dominio verificado
+          to: process.env.NOTIFICATION_EMAIL || 'tuemail@example.com', // Email destinatario
+          subject: `Pago ${payment.status} - Seguimiento de regalo de boda`,
+          html: `
             <h1>📌 Pago ${payment.status}</h1>
             <p><strong>ID del pago:</strong> ${payment.id}</p>
             <p><strong>Monto:</strong> S/ ${payment.transaction_amount}</p>
@@ -111,7 +119,10 @@ export async function POST(request) {
             <p><strong>Email del pagador:</strong> ${payment.payer?.email || 'N/A'}</p>
             <p>Revisa el pago para seguimiento y diagnóstico.</p>
           `,
-      });
+        });
+      } else {
+        console.warn('Resend API key missing. Skipping email notification for webhook event.');
+      }
 
       // Aquí puedes agregar lógica adicional, como:
       // - Actualizar el estado del pedido en tu base de datos
