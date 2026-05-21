@@ -52,9 +52,14 @@ export async function POST(request) {
     const dataIdUrl = (url.searchParams.get('data.id') || body.data?.id || '').toLowerCase();
     const xSignature = headers.get('x-signature');
     const xRequestId = headers.get('x-request-id');
+    const isSandbox = body.live_mode === false;
+
+    if (body.action !== 'payment.updated') {
+      return NextResponse.json({ ignored: true });
+    }
 
     // Validar la firma del webhook según la documentación de Mercado Pago
-    if (WEBHOOK_SECRET) {
+    if (WEBHOOK_SECRET && !isSandbox) {
       if (!xSignature || !xRequestId || !dataIdUrl) {
         console.error('Datos de validación de webhook incompletos', {
           xSignature,
