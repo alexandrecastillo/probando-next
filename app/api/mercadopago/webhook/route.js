@@ -125,26 +125,6 @@ export async function POST(request) {
         `**Pagador:** ${payment.payer?.email || 'N/A'}`);
 
       console.log(`Pago con estado ${payment.status} recibido para seguimiento`);
-    } else if (body.type === 'order') {
-      const orderId = body.data?.id || dataIdUrl;
-      const orderStatus = body.data?.status || 'unknown';
-
-      console.log('Order received:', {
-        action: body.action,
-        id: orderId,
-        status: orderStatus,
-      });
-
-      await kv.set(`order:${orderId}`, {
-        action: body.action,
-        type: body.type,
-        id: orderId,
-        status: orderStatus,
-        data: body.data,
-        received_at: new Date().toISOString(),
-      });
-
-      await sendPagoDiscord(`🎉 Orden recibida: ${body.action}\nID: ${orderId}\nEstado: ${orderStatus}`);
     }
 
     // Responder con 200 OK para confirmar recepción
