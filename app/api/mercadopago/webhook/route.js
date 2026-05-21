@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { kv } from '@vercel/kv';
 import { Resend } from 'resend';
-import { log } from 'console';
+import crypto from 'crypto';
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN || '',
@@ -11,6 +11,8 @@ const client = new MercadoPagoConfig({
 const paymentClient = new Payment(client);
 
 const WEBHOOK_SECRET = process.env.MP_WEBHOOK_SECRET;
+const DISCORD_PAGOS_URL = process.env.DISCORD_PAGOS_URL;
+const DISCORD_ERROR_URL = process.env.DISCORD_ERROR_URL;
 
 const getResendClient = () => {
   const apiKey = process.env.RESEND_API_KEY;
@@ -20,6 +22,22 @@ const getResendClient = () => {
 
   return new Resend(apiKey);
 };
+
+const sendPagoDiscord = async (message) => {
+  await fetch(DISCORD_PAGOS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: message }),
+  });
+}
+
+const sendErrorDiscord = async (message) => {
+  await fetch(DISCORD_ERROR_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: message }),
+  });
+}
 
 export async function POST(request) {
   try {
@@ -45,69 +63,31 @@ export async function POST(request) {
       const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
 
       // Calcular HMAC
-      const crypto = require('crypto');
       const calculatedHash = crypto
         .createHmac('sha256', WEBHOOK_SECRET)
         .update(manifest)
         .digest('hex');
 
       if (calculatedHash !== hash) {
+        await sendErrorDiscord(`⚠️ Firma del webhook inválida para evento ${body.type} con ID ${dataId}`);
         console.error('Firma del webhook inválida');
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     }
-
-    // Notificar a Discord
-    const discordMessage = {
-      content: `🎉 **Nuevo pago recibido!**`
-    };
-
-
-    //await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
-    //  method: 'POST',
-    //  headers: { 'Content-Type': 'application/json' },
-    //  body: JSON.stringify(discordMessage),
-    //});
 
     // Procesar solo notificaciones de pago
     if (body.type === 'payment') {
       const paymentId = body.data.id;
 
       // Obtener detalles del pago
-      let payment
-      let error
+      let payment;
 
       try {
         payment = await paymentClient.get({ id: paymentId });
       } catch (e) {
-        await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            content: JSON.stringify(e)})
-        });
-        
+        await sendErrorDiscord(`❌ Error obteniendo detalles del pago ${paymentId}: ${e.message}`);
+        console.error(`Error obteniendo detalles del pago ${paymentId}:`, e);
         return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
-
-        console.error(`Error obteniendo detalles del pago ${paymentId}:`, error);
-      }
-
-      if (error) {
-        throw error
-
-        await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(error),
-        });
-
-
-        return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
-      }
-
-      if (payment.status == 404) {
-        console.error(`Payment not found: ${paymentId}`);
-        return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
       }
 
       console.log('Pago recibido:', {
@@ -141,11 +121,7 @@ export async function POST(request) {
           `**Pagador:** ${payment.payer?.email || 'N/A'}`,
       };
 
-      await fetch('https://discord.com/api/webhooks/1503613064740601866/_wGuqcRzJWjFwWri4IRtFEGqOpUaT64NSL7ODx4KsQoqQbsiKi7i0kx_2Tg0NTcAi-KI', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(discordMessage),
-      });
+      await sendPagoDiscord(discordMessage);
 
       // Enviar email con Resend para todos los Estados del pago
       const resendClient = getResendClient();
@@ -184,6 +160,7 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Error procesando webhook:', error);
+    await sendErrorDiscord(`❌ Error procesando webhook: ${error.message}`);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
