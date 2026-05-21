@@ -80,13 +80,21 @@ export async function POST(request) {
       try {
         payment = await paymentClient.get({ id: paymentId });
       } catch (e) {
-        error = e
+        await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: JSON.stringify(e)})
+        });
+        
+        return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
+
         console.error(`Error obteniendo detalles del pago ${paymentId}:`, error);
       }
 
       if (error) {
         throw error
-        
+
         await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
