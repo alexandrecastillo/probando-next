@@ -218,7 +218,7 @@ export default function WeddingGiftFlow() {
               <div className="absolute inset-0 border-4 border-primario/20 rounded-full"></div>
               <div className="absolute inset-0 border-4 border-primario border-t-transparent rounded-full animate-spin"></div>
             </div>
-            <p className="text-primario text-lg font-medium">Procesando...</p>
+            <p className="text-primario text-lg font-medium">Continuar...</p>
           </div>
         </div>
       )}
@@ -430,7 +430,7 @@ export default function WeddingGiftFlow() {
             onClick={() => handleContinue(2)}
             className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer"
           >
-            Procesar
+            Continuar
           </button>
         </div>
       </div>
