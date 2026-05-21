@@ -28,6 +28,8 @@ const sendErrorDiscord = async (message) => sendDiscord(DISCORD_ERROR_URL, messa
 
 export async function POST(request) {
   try {
+    console.error("POST", JSON.stringify(request));
+
     const rawBody = await request.text();
     const body = rawBody ? JSON.parse(rawBody) : {};
     const headers = request.headers;
