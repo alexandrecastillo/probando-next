@@ -115,6 +115,10 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
       }
 
+      console.log('Pago recibido object:', {
+        ...payment
+      });
+
       console.log('Pago recibido:', {
         id: payment.id,
         status: payment.status,
