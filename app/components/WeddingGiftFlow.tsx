@@ -107,7 +107,7 @@ export default function WeddingGiftFlow() {
     const rate = 0.0329;
     const igv = 0.18;
     const fixed = 1.0;
-    let assume = 0.0;
+    let assume = 1;
 
     if (net >= 300) {
       assume = 0.5;
