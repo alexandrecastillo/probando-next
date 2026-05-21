@@ -124,6 +124,7 @@ export async function POST(request) {
         date_approved: payment.date_approved,
       });
 
+      /*
       await kv.set(`payment:${paymentId}`, {
         id: payment.id,
         status: payment.status,
@@ -134,6 +135,7 @@ export async function POST(request) {
         payer: payment.payer,
         metadata: payment.metadata,
       });
+      */
 
       await sendPagoDiscord(`🎉 Nuevo pago recibido!\n\n` +
         `**ID:** ${payment.id}\n` +
