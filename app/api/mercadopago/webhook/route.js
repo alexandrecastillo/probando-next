@@ -39,9 +39,17 @@ export async function POST(request) {
     const xSignature = headers.get('x-signature');
 
     if (xSignature && WEBHOOK_SECRET) {
-      const signature = xSignature.startsWith('sha256=')
-        ? xSignature.split('=')[1]
-        : xSignature;
+      const signature = xSignature
+        .split(',')
+        .map(part => part.trim())
+        .map(part => part.split('='))
+        .find(([key]) => key === 'sha256' || key === 'v1')
+        ? xSignature
+            .split(',')
+            .map(part => part.trim())
+            .map(part => part.split('='))
+            .find(([key]) => key === 'sha256' || key === 'v1')[1]
+        : xSignature.trim();
 
       const expectedHex = crypto
         .createHmac('sha256', WEBHOOK_SECRET)
@@ -56,7 +64,12 @@ export async function POST(request) {
       if (signature !== expectedHex && signature !== expectedBase64) {
         const dataId = body.data?.id || '';
         await sendErrorDiscord(`⚠️ Firma del webhook inválida para evento ${body.type} con ID ${dataId}`);
-        console.error('Firma del webhook inválida');
+        console.error('Firma del webhook inválida', {
+          signature,
+          expectedHex,
+          expectedBase64,
+          rawBodyLength: rawBody.length,
+        });
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     }
