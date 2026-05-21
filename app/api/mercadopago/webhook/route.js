@@ -63,11 +63,11 @@ export async function POST(request) {
     };
 
 
-    await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(discordMessage),
-    });
+    //await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
+    //  method: 'POST',
+    //  headers: { 'Content-Type': 'application/json' },
+    //  body: JSON.stringify(discordMessage),
+    //});
 
     // Procesar solo notificaciones de pago
     if (body.type === 'payment') {
@@ -77,6 +77,12 @@ export async function POST(request) {
       const payment = await paymentClient.get({ id: paymentId });
 
       console.error(`Payment response: ${JSON.stringify(payment)}`);
+
+      await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payment),
+      });
 
       if (payment.status == 404) {
         console.error(`Payment not found: ${paymentId}`);
