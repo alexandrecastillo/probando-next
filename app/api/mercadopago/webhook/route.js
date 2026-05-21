@@ -33,7 +33,7 @@ const logRequest = async (request) => {
   }
 
   const rawBody = await request.text();
-  console.error('Webhook request received', {
+  console.log('Webhook request received', {
     method: request.method,
     url: request.url,
     headers,
@@ -114,6 +114,8 @@ export async function POST(request) {
         console.error(`Error obteniendo detalles del pago ${paymentId}:`, e);
         return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
       }
+
+      console.log('Detalles del pago obtenidos:', JSON.stringify(payment));
 
       console.log('Pago recibido:', {
         id: payment.id,

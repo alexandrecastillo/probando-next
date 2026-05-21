@@ -9,7 +9,7 @@ export async function POST(request) {
   try {
     const url = new URL(request.url);
     const body = await request.json();
-    const { mensaje, montoRegalo, montoComisionMP } = body;
+    const { mensaje, montoRegalo, montoComisionMP, nombre } = body;
 
     // ✅ Validación correcta
     if (!montoRegalo || !montoComisionMP) {
@@ -51,6 +51,7 @@ export async function POST(request) {
         },
         auto_return: "approved",
         metadata: {
+          nombre: nombre || "",
           mensaje: mensaje || "",
           montoRegalo: montoRegalo.toString(),
           montoComisionMP: montoComisionMP.toString(),
