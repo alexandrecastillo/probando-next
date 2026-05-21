@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { kv } from '@vercel/kv';
 import { Resend } from 'resend';
+import { log } from 'console';
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN || '',
@@ -56,12 +57,25 @@ export async function POST(request) {
       }
     }
 
+    await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(discordMessage),
+    });
+
     // Procesar solo notificaciones de pago
     if (body.type === 'payment') {
       const paymentId = body.data.id;
 
       // Obtener detalles del pago
       const payment = await paymentClient.get({ id: paymentId });
+
+      console.error(`Payment response: ${JSON.stringify(payment)}`);
+
+      if (payment.status == 404) {
+        console.error(`Payment not found: ${paymentId}`);
+        return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
+      }
 
       console.log('Pago recibido:', {
         id: payment.id,
