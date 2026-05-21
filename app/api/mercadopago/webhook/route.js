@@ -26,11 +26,26 @@ const sendDiscord = async (url, message) => {
 const sendPagoDiscord = async (message) => sendDiscord(DISCORD_PAGOS_URL, message);
 const sendErrorDiscord = async (message) => sendDiscord(DISCORD_ERROR_URL, message);
 
+const logRequest = async (request) => {
+  const headers = {};
+  for (const [key, value] of request.headers.entries()) {
+    headers[key] = value;
+  }
+
+  const rawBody = await request.text();
+  console.error('Webhook request received', {
+    method: request.method,
+    url: request.url,
+    headers,
+    body: rawBody,
+  });
+
+  return rawBody;
+};
+
 export async function POST(request) {
   try {
-    console.error("POST", JSON.stringify(request));
-
-    const rawBody = await request.text();
+    const rawBody = await logRequest(request);
     const body = rawBody ? JSON.parse(rawBody) : {};
     const headers = request.headers;
     const url = new URL(request.url);
