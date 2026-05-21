@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { kv } from '@vercel/kv';
-import { Resend } from 'resend';
 import crypto from 'crypto';
 
 const client = new MercadoPagoConfig({
@@ -13,15 +12,6 @@ const paymentClient = new Payment(client);
 const WEBHOOK_SECRET = process.env.MP_WEBHOOK_SECRET;
 const DISCORD_PAGOS_URL = process.env.DISCORD_PAGOS_URL;
 const DISCORD_ERROR_URL = process.env.DISCORD_ERROR_URL;
-
-const getResendClient = () => {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
-
-  return new Resend(apiKey);
-};
 
 const sendPagoDiscord = async (message) => {
   await fetch(DISCORD_PAGOS_URL, {
@@ -41,34 +31,30 @@ const sendErrorDiscord = async (message) => {
 
 export async function POST(request) {
   try {
-    const body = await request.json();
+    const rawBody = await request.text();
+    const body = rawBody ? JSON.parse(rawBody) : {};
     const headers = request.headers;
 
-    // Validar la firma del webhook (opcional pero recomendado)
+    // Validar la firma del webhook con el cuerpo crudo
     const xSignature = headers.get('x-signature');
-    const xRequestId = headers.get('x-request-id');
 
     if (xSignature && WEBHOOK_SECRET) {
-      // Extraer ts y v1 de x-signature
-      const parts = xSignature.split(',');
-      let ts, hash;
-      parts.forEach(part => {
-        const [key, value] = part.split('=');
-        if (key?.trim() === 'ts') ts = value?.trim();
-        if (key?.trim() === 'v1') hash = value?.trim();
-      });
+      const signature = xSignature.startsWith('sha256=')
+        ? xSignature.split('=')[1]
+        : xSignature;
 
-      // Crear el template para validar
-      const dataId = body.data?.id || '';
-      const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
-
-      // Calcular HMAC
-      const calculatedHash = crypto
+      const expectedHex = crypto
         .createHmac('sha256', WEBHOOK_SECRET)
-        .update(manifest)
+        .update(rawBody)
         .digest('hex');
 
-      if (calculatedHash !== hash) {
+      const expectedBase64 = crypto
+        .createHmac('sha256', WEBHOOK_SECRET)
+        .update(rawBody)
+        .digest('base64');
+
+      if (signature !== expectedHex && signature !== expectedBase64) {
+        const dataId = body.data?.id || '';
         await sendErrorDiscord(`⚠️ Firma del webhook inválida para evento ${body.type} con ID ${dataId}`);
         console.error('Firma del webhook inválida');
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
@@ -122,35 +108,6 @@ export async function POST(request) {
       };
 
       await sendPagoDiscord(discordMessage);
-
-      // Enviar email con Resend para todos los Estados del pago
-      const resendClient = getResendClient();
-      if (resendClient) {
-        await resendClient.emails.send({
-          from: 'Regalo de Boda <onboarding@resend.dev>', // Cambia esto por tu dominio verificado
-          to: process.env.NOTIFICATION_EMAIL || 'tuemail@example.com', // Email destinatario
-          subject: `Pago ${payment.status} - Seguimiento de regalo de boda`,
-          html: `
-            <h1>📌 Pago ${payment.status}</h1>
-            <p><strong>ID del pago:</strong> ${payment.id}</p>
-            <p><strong>Monto:</strong> S/ ${payment.transaction_amount}</p>
-            <p><strong>Descripción:</strong> ${payment.description}</p>
-            <p><strong>Estado:</strong> ${payment.status}</p>
-            <p><strong>Detalle del estado:</strong> ${payment.status_detail || 'N/A'}</p>
-            <p><strong>Fecha:</strong> ${payment.date_created}</p>
-            <p><strong>Fecha de aprobación:</strong> ${payment.date_approved || 'N/A'}</p>
-            <p><strong>Email del pagador:</strong> ${payment.payer?.email || 'N/A'}</p>
-            <p>Revisa el pago para seguimiento y diagnóstico.</p>
-          `,
-        });
-      } else {
-        console.warn('Resend API key missing. Skipping email notification for webhook event.');
-      }
-
-      // Aquí puedes agregar lógica adicional, como:
-      // - Actualizar el estado del pedido en tu base de datos
-      // - Enviar email de confirmación
-      // - etc.
 
       console.log(`Pago con estado ${payment.status} recibido para seguimiento`);
     }
