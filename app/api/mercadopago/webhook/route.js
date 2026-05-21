@@ -115,7 +115,6 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
       }
 
-      console.log('Pago recibido object:', payment);
       console.log('Pago recibido JSON:', JSON.stringify(payment, null, 2));
 
       console.log('Pago recibido:', {
@@ -127,19 +126,6 @@ export async function POST(request) {
         date_approved: payment.date_approved,
       });
 
-      /*
-      await kv.set(`payment:${paymentId}`, {
-        id: payment.id,
-        status: payment.status,
-        amount: payment.transaction_amount,
-        description: payment.description,
-        date_created: payment.date_created,
-        date_approved: payment.date_approved,
-        payer: payment.payer,
-        metadata: payment.metadata,
-      });
-      */
-
       await sendPagoDiscord(
         `🎉 Nuevo pago recibido!\n\n` +
         `**ID:** ${payment.id}\n` +
@@ -147,8 +133,8 @@ export async function POST(request) {
         `**Monto:** S/ ${payment.transaction_amount}\n` +
         `**Descripción:** ${payment.description}\n` +
         `**Fecha:** ${payment.date_created}\n` +
-        `**Pagador:** ${payment.payer?.email || 'N/A'}` +
-        `**Metadata:** -------------------------` +
+        `**Pagador:** ${payment.payer?.email || 'N/A'}\n` +
+        `**Metadata:** -------------------------\n` +
         `**Monto regalo:** S/ ${payment.metadata.monto_regalo}\n` +
         `**Monto comisión MP:** S/ ${payment.metadata.monto_comision_mp}\n` +
         `**Nombre:** ${payment.metadata.nombre || 'Anónimo'}\n` +
