@@ -58,16 +58,31 @@ export default function WeddingGiftFlow() {
     setAmount(formatted);
   };
 
+  const moveMoneyCursorToEnd = () => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const position = input.value.length;
+    input.setSelectionRange(position, position);
+  };
+
   const handleMoneyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     formatMoney(e.target.value);
+    window.requestAnimationFrame(moveMoneyCursorToEnd);
   };
 
   const handleMoneyKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (
       !/[0-9]/.test(e.key) &&
-      !["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)
+      !["Backspace", "Delete", "Tab"].includes(e.key)
     ) {
       e.preventDefault();
+      return;
+    }
+
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Home" || e.key === "End") {
+      e.preventDefault();
+      moveMoneyCursorToEnd();
     }
   };
 
@@ -78,12 +93,7 @@ export default function WeddingGiftFlow() {
   };
 
   const handleMoneyFocus = () => {
-    const input = inputRef.current;
-    if (!input) return;
-
-    const value = input.value || "";
-    const position = value.length;
-    input.setSelectionRange(position, position);
+    moveMoneyCursorToEnd();
   };
 
   const handleMoneyBlur = () => {
@@ -97,7 +107,7 @@ export default function WeddingGiftFlow() {
     const rate = 0.0329;
     const igv = 0.18;
     const fixed = 1.0;
-    var assume = 0.75;
+    let assume = 0.75;
 
     if (net >= 400) {
       assume = 0.5;
@@ -108,7 +118,6 @@ export default function WeddingGiftFlow() {
     const f = fixed * (1 + igv);
 
     const total = (net + assume * f) / (1 - assume * r);
-
     const commission = total - net;
 
     return {
@@ -249,6 +258,8 @@ export default function WeddingGiftFlow() {
                     onKeyDown={handleMoneyKeyDown}
                     onKeyUp={handleMoneyKeyPress}
                     onFocus={handleMoneyFocus}
+                    onClick={moveMoneyCursorToEnd}
+                    onSelect={moveMoneyCursorToEnd}
                     onBlur={handleMoneyBlur}
                     className={`text-6xl font-bold text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
                       numericAmount > 0 ? "text-primario" : "text-secundario"
