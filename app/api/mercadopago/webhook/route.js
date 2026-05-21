@@ -53,13 +53,10 @@ export async function POST(request) {
     const xSignature = headers.get('x-signature');
     const xRequestId = headers.get('x-request-id');
     const isSandbox = body.live_mode === false;
-
-    if (body.action !== 'payment.updated') {
-      return NextResponse.json({ ignored: true });
-    }
+    const isCreated = body.action === 'payment.created';
 
     // Validar la firma del webhook según la documentación de Mercado Pago
-    if (WEBHOOK_SECRET && !isSandbox) {
+    if (WEBHOOK_SECRET && !isSandbox && !isCreated) {
       if (!xSignature || !xRequestId || !dataIdUrl) {
         console.error('Datos de validación de webhook incompletos', {
           xSignature,
