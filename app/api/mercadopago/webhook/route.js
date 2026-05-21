@@ -140,13 +140,20 @@ export async function POST(request) {
       });
       */
 
-      await sendPagoDiscord(`🎉 Nuevo pago recibido!\n\n` +
+      await sendPagoDiscord(
+        `🎉 Nuevo pago recibido!\n\n` +
         `**ID:** ${payment.id}\n` +
         `**Estado:** ${payment.status}\n` +
         `**Monto:** S/ ${payment.transaction_amount}\n` +
         `**Descripción:** ${payment.description}\n` +
         `**Fecha:** ${payment.date_created}\n` +
-        `**Pagador:** ${payment.payer?.email || 'N/A'}`);
+        `**Pagador:** ${payment.payer?.email || 'N/A'}` +
+        `**Metadata:** -------------------------` +
+        `**Monto regalo:** S/ ${payment.metadata.monto_regalo}\n` +
+        `**Monto comisión MP:** S/ ${payment.metadata.monto_comision_mp}\n` +
+        `**Nombre:** ${payment.metadata.nombre || 'Anónimo'}\n` +
+        `**Mensaje:** ${payment.metadata.mensaje || 'Sin mensaje'}\n`
+      );
 
       console.log(`Pago con estado ${payment.status} recibido para seguimiento`);
     }
