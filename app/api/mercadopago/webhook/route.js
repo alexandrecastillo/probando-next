@@ -13,68 +13,75 @@ const WEBHOOK_SECRET = process.env.MP_WEBHOOK_SECRET;
 const DISCORD_PAGOS_URL = process.env.DISCORD_PAGOS_URL;
 const DISCORD_ERROR_URL = process.env.DISCORD_ERROR_URL;
 
-const sendPagoDiscord = async (message) => {
-  await fetch(DISCORD_PAGOS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content: message }),
-  });
-}
+const sendDiscord = async (url, message) => {
+  if (!url) return;
 
-const sendErrorDiscord = async (message) => {
-  await fetch(DISCORD_ERROR_URL, {
+  await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content: message }),
+    body: JSON.stringify({ content: String(message) }),
   });
-}
+};
+
+const sendPagoDiscord = async (message) => sendDiscord(DISCORD_PAGOS_URL, message);
+const sendErrorDiscord = async (message) => sendDiscord(DISCORD_ERROR_URL, message);
 
 export async function POST(request) {
   try {
     const rawBody = await request.text();
     const body = rawBody ? JSON.parse(rawBody) : {};
     const headers = request.headers;
-
-    // Validar la firma del webhook con el cuerpo crudo
+    const url = new URL(request.url);
+    const dataIdUrl = (url.searchParams.get('data.id') || body.data?.id || '').toLowerCase();
     const xSignature = headers.get('x-signature');
+    const xRequestId = headers.get('x-request-id');
 
-    if (xSignature && WEBHOOK_SECRET) {
-      const signature = xSignature
+    // Validar la firma del webhook según la documentación de Mercado Pago
+    if (WEBHOOK_SECRET) {
+      if (!xSignature || !xRequestId || !dataIdUrl) {
+        console.error('Datos de validación de webhook incompletos', {
+          xSignature,
+          xRequestId,
+          dataIdUrl,
+        });
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+      }
+
+      const signatureParts = xSignature
         .split(',')
-        .map(part => part.trim())
-        .map(part => part.split('='))
-        .find(([key]) => key === 'sha256' || key === 'v1')
-        ? xSignature
-            .split(',')
-            .map(part => part.trim())
-            .map(part => part.split('='))
-            .find(([key]) => key === 'sha256' || key === 'v1')[1]
-        : xSignature.trim();
+        .map(part => part.trim().split('='))
+        .reduce((acc, [key, value]) => {
+          if (!key || !value) return acc;
+          acc[key] = value.trim();
+          return acc;
+        }, {});
 
-      const expectedHex = crypto
+      const ts = signatureParts.ts;
+      const hash = signatureParts.v1;
+
+      if (!ts || !hash) {
+        console.error('Cabecera x-signature inválida', { xSignature });
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+      }
+
+      const manifest = `id:${dataIdUrl};request-id:${xRequestId};ts:${ts};`;
+      const expectedHash = crypto
         .createHmac('sha256', WEBHOOK_SECRET)
-        .update(rawBody)
+        .update(manifest)
         .digest('hex');
 
-      const expectedBase64 = crypto
-        .createHmac('sha256', WEBHOOK_SECRET)
-        .update(rawBody)
-        .digest('base64');
-
-      if (signature !== expectedHex && signature !== expectedBase64) {
-        const dataId = body.data?.id || '';
-        await sendErrorDiscord(`⚠️ Firma del webhook inválida para evento ${body.type} con ID ${dataId}`);
+      if (hash !== expectedHash) {
+        await sendErrorDiscord(`⚠️ Firma del webhook inválida para evento ${body.type} con ID ${dataIdUrl}`);
         console.error('Firma del webhook inválida', {
-          signature,
-          expectedHex,
-          expectedBase64,
-          rawBodyLength: rawBody.length,
+          hash,
+          expectedHash,
+          manifest,
         });
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     }
 
-    // Procesar solo notificaciones de pago
+    // Procesar notificaciones de pago
     if (body.type === 'payment') {
       const paymentId = body.data.id;
 
@@ -109,20 +116,35 @@ export async function POST(request) {
         metadata: payment.metadata,
       });
 
-      // Notificar a Discord
-      const discordMessage = {
-        content: `🎉 **Nuevo pago recibido!**\n\n` +
-          `**ID:** ${payment.id}\n` +
-          `**Estado:** ${payment.status}\n` +
-          `**Monto:** S/ ${payment.transaction_amount}\n` +
-          `**Descripción:** ${payment.description}\n` +
-          `**Fecha:** ${payment.date_created}\n` +
-          `**Pagador:** ${payment.payer?.email || 'N/A'}`,
-      };
-
-      await sendPagoDiscord(discordMessage);
+      await sendPagoDiscord(`🎉 Nuevo pago recibido!\n\n` +
+        `**ID:** ${payment.id}\n` +
+        `**Estado:** ${payment.status}\n` +
+        `**Monto:** S/ ${payment.transaction_amount}\n` +
+        `**Descripción:** ${payment.description}\n` +
+        `**Fecha:** ${payment.date_created}\n` +
+        `**Pagador:** ${payment.payer?.email || 'N/A'}`);
 
       console.log(`Pago con estado ${payment.status} recibido para seguimiento`);
+    } else if (body.type === 'order') {
+      const orderId = body.data?.id || dataIdUrl;
+      const orderStatus = body.data?.status || 'unknown';
+
+      console.log('Order received:', {
+        action: body.action,
+        id: orderId,
+        status: orderStatus,
+      });
+
+      await kv.set(`order:${orderId}`, {
+        action: body.action,
+        type: body.type,
+        id: orderId,
+        status: orderStatus,
+        data: body.data,
+        received_at: new Date().toISOString(),
+      });
+
+      await sendPagoDiscord(`🎉 Orden recibida: ${body.action}\nID: ${orderId}\nEstado: ${orderStatus}`);
     }
 
     // Responder con 200 OK para confirmar recepción
