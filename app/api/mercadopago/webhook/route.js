@@ -85,6 +85,7 @@ export async function POST(request) {
       }
 
       if (error) {
+        throw error
         
         await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
           method: 'POST',
