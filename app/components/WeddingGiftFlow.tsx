@@ -109,8 +109,8 @@ export default function WeddingGiftFlow() {
     const fixed = 1.0;
 
     let assume = 1;
-    
-    if (net < 200) {
+
+    if (net >= 200) {
       assume = 0.75;
     } else if (net >= 300) {
       assume = 0.5;
