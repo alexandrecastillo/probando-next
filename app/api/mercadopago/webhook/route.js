@@ -75,18 +75,25 @@ export async function POST(request) {
 
       // Obtener detalles del pago
       let payment
+      let error
 
       try {
         payment = await paymentClient.get({ id: paymentId });
-      } catch (error) {
+      } catch (e) {
+        error = e
+        console.error(`Error obteniendo detalles del pago ${paymentId}:`, error);
+      }
+
+      if (error) {
+        
         await fetch('https://discord.com/api/webhooks/1506870691985621013/Dvl0wGWtrTWyb76S_4-yLkBPh_VjssRD8DH58NSZ1lUOUYUFZqBsDFonQ1kbJkHsSmW5', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(error),
         });
 
-        console.error(`Error obteniendo detalles del pago ${paymentId}:`, error);
-        return NextResponse.json({ error: 'Error fetching payment details' }, { status: 500 });
+
+        return NextResponse.json({ error: 'Error fetching payment details' }, { status: 200 });
       }
 
       if (payment.status == 404) {
