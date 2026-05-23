@@ -572,7 +572,7 @@ export default function WeddingGiftFlow() {
                   placeholder="Ingrese su nombre"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full px-4 py-3 bg-fondo-secundario rounded-xl text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 overflow-hidden text-ellipsis whitespace-nowrap"
                 />
               </div>
 
@@ -593,7 +593,7 @@ export default function WeddingGiftFlow() {
                   placeholder="Escribe un mensaje para los novios..."
                   value={messageInput}
                   onChange={handleMessageChange}
-                  className="w-full px-4 py-3 bg-fondo-secundario rounded-xl text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 resize-none"
                 />
               </div>
             </div>
@@ -604,9 +604,12 @@ export default function WeddingGiftFlow() {
         <div className="px-6 pb-safe py-4 border-t border-gray-100">
           <button
             type="button"
-            onClick={() => handleContinue(1)}
+            onClick={() => {
+              if (!isStep1ContinueDisabled) handleContinue(1);
+            }}
             disabled={isStep1ContinueDisabled}
-            className="w-full font-semibold py-4 transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer disabled:cursor-not-allowed disabled:bg-button-deshabilitado disabled:text-texto-button-deshabilitado"
+            aria-disabled={isStep1ContinueDisabled}
+            className={`w-full font-semibold py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? 'bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed' : 'bg-button text-texto-button cursor-pointer'}`}
           >
             Continuar
           </button>
@@ -694,7 +697,7 @@ export default function WeddingGiftFlow() {
                 <label className="block text-sm font-medium text-primario mb-2">
                   De parte de
                 </label>
-                <p className="w-full px-4 py-3 bg-fondo-secundario rounded-xl text-primario outline-none text-ellipsis whitespace-nowrap">
+                <p className="w-full px-4 py-3 bg-fondo-secundario text-primario outline-none text-ellipsis whitespace-nowrap">
                   {nameInput || "Anónimo"}
                 </p>
               </div>
@@ -703,7 +706,7 @@ export default function WeddingGiftFlow() {
                 <label className="block text-sm font-medium text-primario mb-2">
                   Mensaje
                 </label>
-                <p className="w-full px-4 py-3 bg-fondo-secundario rounded-xl text-primario placeholder-secundario outline-none resize-none min-h-24">
+                <p className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none resize-none min-h-24">
                   {messageInput || "Sin mensaje"}
                 </p>
               </div>
@@ -715,7 +718,7 @@ export default function WeddingGiftFlow() {
         <div className="px-6 pb-safe py-4 border-t border-gray-100">
           <button
             onClick={() => handleContinue(2)}
-            className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer"
+            className="w-full font-semibold py-4 transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer"
           >
             Continuar
           </button>
