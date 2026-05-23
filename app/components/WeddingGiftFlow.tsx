@@ -60,6 +60,24 @@ export default function WeddingGiftFlow() {
     adjustInputWidth();
   }, [amount, adjustInputWidth]);
 
+  // Asegurar cálculo inicial del ancho al montar (fuentes pueden cargar luego)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raf = () => {
+      window.requestAnimationFrame(() => {
+        adjustInputWidth();
+      });
+    };
+
+    // Llamar en mount y también después de 'load' por si las fuentes aún cargan
+    raf();
+    window.addEventListener("load", raf);
+
+    return () => {
+      window.removeEventListener("load", raf);
+    };
+  }, [adjustInputWidth]);
+
   const { totalToCharge, commission } = useMemo(() => calculatePrice(numericAmount), [numericAmount]);
   const serviceFee = commission;
   const total = totalToCharge;
@@ -222,6 +240,17 @@ export default function WeddingGiftFlow() {
           if (obj.mensaje) setMessageInput(obj.mensaje);
           // Ir al paso 2
           setStep(2);
+          // Asegurar que el ancho del input se recalcule y el cursor vaya al final
+          if (typeof window !== "undefined") {
+            window.requestAnimationFrame(() => {
+              adjustInputWidth();
+              moveMoneyCursorToEnd();
+            });
+            // extra raf por si la actualización de estado necesita otro frame
+            window.requestAnimationFrame(() => {
+              adjustInputWidth();
+            });
+          }
         }
       }
 
