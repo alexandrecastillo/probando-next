@@ -96,11 +96,7 @@ export default function WeddingGiftFlow() {
       try {
         const externalRef = localStorage.getItem("mp_external_reference");
         if (externalRef) {
-          setErrorModal({
-            isOpen: true,
-            title: "Has vuelto a la pestaña",
-            message: `Detectamos que regresaste al sitio.\nReferencia externa: ${externalRef}\nID del navegador: ${getOrCreateBrowserId()}\n\nSi llegaste desde Mercado Pago, revisa el estado del pago o intenta nuevamente.`,
-          });
+          setIsLoading(false);
         }
       } catch (e) {
         // ignore
