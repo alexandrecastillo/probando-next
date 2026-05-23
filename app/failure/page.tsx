@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function FailurePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     const run = async () => {
       try {
-        // Prioridad: query param external_reference, luego localStorage
-        const externalFromQuery = searchParams?.get("external_reference");
-        let external = externalFromQuery || null;
-        if (!external && typeof window !== "undefined") {
-          external = localStorage.getItem("mp_external_reference");
+        // Prioridad: query param external_reference (desde window), luego localStorage
+        let external = null;
+        if (typeof window !== "undefined") {
+          const qp = new URLSearchParams(window.location.search);
+          external = qp.get("external_reference") || localStorage.getItem("mp_external_reference");
+        } else {
+          external = null;
         }
 
         // If no external reference, just restore local saved attempt
@@ -112,7 +113,7 @@ export default function FailurePage() {
     };
 
     run();
-  }, [router, searchParams]);
+  }, [router]);
 
   return (
     <main className="min-h-dvh flex items-center justify-center bg-fondo px-6 py-12">
