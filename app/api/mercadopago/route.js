@@ -46,7 +46,7 @@ export async function POST(request) {
         },
         back_urls: {
           success: `https://briana-alexandre.my.canva.site/wedding-of-briana-alexandre/gracias`,
-          failure: `https://briana-alexandre.my.canva.site/wedding-of-briana-alexandre/gracias`,
+          failure: `${baseUrl}/failure`,
           pending: `${baseUrl}/pending`,
         },
         auto_return: "approved",
