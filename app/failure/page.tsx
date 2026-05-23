@@ -182,51 +182,11 @@ export default function FailurePage() {
     <main className="min-h-dvh flex items-center justify-center bg-fondo px-6 py-12">
       <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
         <div className="flex flex-col items-center gap-6">
-          {/* Material Design Circular Progress */}
-          <svg className="w-16 h-16 animate-spin" viewBox="0 0 50 50">
-            <circle
-              className="stroke-primario/20"
-              cx="25"
-              cy="25"
-              r="20"
-              fill="none"
-              strokeWidth="4"
-            />
-            <circle
-              className="stroke-primario"
-              cx="25"
-              cy="25"
-              r="20"
-              fill="none"
-              strokeWidth="4"
-              strokeDasharray="80, 200"
-              strokeDashoffset="0"
-              strokeLinecap="round"
-              style={{
-                animation: "material-spinner 1.4s ease-in-out infinite",
-              }}
-            />
-          </svg>
+			    <div className="w-10 h-10 rounded-full border-4 border-y-zinc-700 border-l-zinc-700 animate-spin">
+          </div>
           <p className="text-primario text-lg font-medium">Cargando...</p>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes material-spinner {
-          0% {
-            stroke-dasharray: 1, 200;
-            stroke-dashoffset: 0;
-          }
-          50% {
-            stroke-dasharray: 100, 200;
-            stroke-dashoffset: -15;
-          }
-          100% {
-            stroke-dasharray: 100, 200;
-            stroke-dashoffset: -125;
-          }
-        }
-      `}</style>
     </main>
   );
 }
