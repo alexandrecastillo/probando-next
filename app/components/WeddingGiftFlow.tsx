@@ -16,6 +16,8 @@ export default function WeddingGiftFlow() {
   }>({ isOpen: false, title: "", message: "" });
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
   const measureSpanRef = useRef<HTMLSpanElement>(null);
 
   // Generador de UUID (fallback si no existe crypto.randomUUID)
@@ -177,6 +179,35 @@ export default function WeddingGiftFlow() {
     input.setSelectionRange(position, position);
   };
 
+  const capitalizeWords = (value: string) => {
+    return value
+      .split(/(\s+)/)
+      .map((token) => {
+        if (/\s+/.test(token)) return token;
+        return token.length > 0 ? token[0].toUpperCase() + token.slice(1) : token;
+      })
+      .join("");
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setNameInput(capitalizeWords(val));
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      messageRef.current?.focus();
+    }
+  };
+
+  const handleMessageKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      (e.target as HTMLTextAreaElement).blur();
+    }
+  };
+
   const handleMoneyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     formatMoney(e.target.value);
     window.requestAnimationFrame(moveMoneyCursorToEnd);
@@ -188,6 +219,12 @@ export default function WeddingGiftFlow() {
       !["Backspace", "Delete", "Tab"].includes(e.key)
     ) {
       e.preventDefault();
+      return;
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      nameRef.current?.focus();
       return;
     }
 
@@ -567,11 +604,13 @@ export default function WeddingGiftFlow() {
                   De parte de
                 </label>
                 <input
+                  ref={nameRef}
                   type="text"
                   maxLength={50}
                   placeholder="Ingrese su nombre"
                   value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
+                  onChange={handleNameChange}
+                  onKeyDown={handleNameKeyDown}
                   className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 overflow-hidden text-ellipsis whitespace-nowrap"
                 />
               </div>
@@ -592,7 +631,9 @@ export default function WeddingGiftFlow() {
                   rows={3}
                   placeholder="Escriba un mensaje para los novios..."
                   value={messageInput}
+                  ref={messageRef}
                   onChange={handleMessageChange}
+                  onKeyDown={handleMessageKeyDown}
                   className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 resize-none"
                 />
               </div>
