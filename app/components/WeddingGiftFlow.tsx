@@ -206,6 +206,44 @@ export default function WeddingGiftFlow() {
     });
   }, [step]);
 
+  // Restaurar intento guardado si hay una señal de restauración (por ejemplo desde /failure)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const shouldRestore = localStorage.getItem("mp_restore");
+      const saved = localStorage.getItem("mp_saved_attempt");
+      const errorModalData = localStorage.getItem("mp_error_modal");
+      if (shouldRestore && saved) {
+        const obj = JSON.parse(saved);
+        if (obj) {
+          // Restaurar campos
+          if (obj.formattedAmount) setAmount(obj.formattedAmount);
+          if (obj.nombre) setNameInput(obj.nombre);
+          if (obj.mensaje) setMessageInput(obj.mensaje);
+          // Ir al paso 2
+          setStep(2);
+        }
+      }
+
+      if (errorModalData) {
+        try {
+          const modal = JSON.parse(errorModalData);
+          if (modal && modal.message) {
+            setErrorModal({ isOpen: true, title: modal.title || "", message: modal.message });
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // limpiar banderas
+      localStorage.removeItem("mp_restore");
+      localStorage.removeItem("mp_error_modal");
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value.slice(0, 150);
     setMessageInput(value);
@@ -228,6 +266,23 @@ export default function WeddingGiftFlow() {
 
     // Obtener o crear identificador persistente del navegador
     const browserId = getOrCreateBrowserId();
+
+    // Guardar intento actual para poder restaurarlo si el usuario vuelve
+    try {
+      const saved = {
+        nombre: name,
+        mensaje: message,
+        montoRegalo: numericAmount,
+        montoComisionMP: serviceFee,
+        total: total,
+        formattedAmount: formattedAmount,
+        externalReference,
+        browserId,
+      };
+      localStorage.setItem("mp_saved_attempt", JSON.stringify(saved));
+    } catch (e) {
+      // ignore
+    }
 
     const maxRetries = 5;
 
