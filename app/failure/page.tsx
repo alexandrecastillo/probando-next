@@ -110,9 +110,9 @@ export default function FailurePage() {
           localStorage.setItem(
             "mp_error_modal",
             JSON.stringify({
-              title: "Ocurrió un error",
+              title: "Tu regalo no se completó",
               message:
-                "Detectamos un intento de pago. Si el cobro no se completó, puedes reintentar o usar transferencia / Yape / Plin.",
+                "El pago no llegó a completarse. Reintenta o haz tu regalo mediante una transferencia, Yape o Plin en pocos minutos.",
             }),
           );
         } catch (e) {
@@ -120,7 +120,7 @@ export default function FailurePage() {
             localStorage.setItem("mp_restore", "1");
             localStorage.setItem(
               "mp_error_modal",
-              JSON.stringify({ title: "Ocurrió un error", message: "Detectamos un intento de pago. Intenta nuevamente o usa otra forma de pago." }),
+              JSON.stringify({ title: "Tu regalo no se completó", message: "Detectamos un intento de pago. Intenta nuevamente o usa otra forma de pago." }),
             );
           } catch (e) {}
         }
@@ -132,7 +132,7 @@ export default function FailurePage() {
           localStorage.setItem("mp_restore", "1");
           localStorage.setItem(
             "mp_error_modal",
-            JSON.stringify({ title: "Error", message: "Ocurrió un error inesperado. Intenta nuevamente." }),
+            JSON.stringify({ title: "Tu regalo no se completó", message: "Ocurrió un error inesperado. Intenta nuevamente." }),
           );
         } catch (e) {}
         router.replace("/");
