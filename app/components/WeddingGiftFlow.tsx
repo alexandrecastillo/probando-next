@@ -9,6 +9,11 @@ export default function WeddingGiftFlow() {
   const [messageInput, setMessageInput] = useState("");
   const [charCount, setCharCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({ isOpen: false, title: "", message: "" });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const measureSpanRef = useRef<HTMLSpanElement>(null);
@@ -156,34 +161,71 @@ export default function WeddingGiftFlow() {
 
     setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/mercadopago", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mensaje: message,
-          montoRegalo: String(numericAmount),
-          montoComisionMP: String(serviceFee),
-          nombre: name,
-        }),
-      });
+    const maxRetries = 5;
 
-      const data = await response.json();
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch("/api/mercadopago", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mensaje: message,
+            montoRegalo: String(numericAmount),
+            montoComisionMP: String(serviceFee),
+            nombre: name,
+          }),
+        });
 
-      if (!response.ok || !data.init_point) {
-        throw new Error(data.error || "No se pudo crear la preferencia");
+        const data = await response.json();
+
+        if (!response.ok || !data.init_point) {
+          throw new Error(data.error || "No se pudo crear la preferencia");
+        }
+
+        alert("Redirigiendo a Mercado Pago...");
+        window.location.href = data.init_point;
+        return;
+      } catch (error) {
+        // Detectar si es un error de conexión/internet
+        const isNetworkError =
+          !navigator.onLine ||
+          (error instanceof TypeError &&
+            error.message.includes("Failed to fetch"));
+
+        if (isNetworkError) {
+          // Si no hay internet, no reintentar
+          setIsLoading(false);
+          setErrorModal({
+            isOpen: true,
+            title: "Sin conexión a internet",
+            message:
+              "No pudimos conectar con el servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.",
+          });
+          return;
+        }
+
+        console.error(
+          `Error al crear preferencia de Mercado Pago (intento ${attempt}/${maxRetries}):`,
+          error
+        );
+
+        if (attempt < maxRetries) {
+          // Esperar un poco antes de reintentar
+          await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+        }
       }
-
-      window.location.href = data.init_point;
-    } catch (error) {
-      console.error("Error al crear preferencia de Mercado Pago:", error);
-      alert(
-        "Ocurrió un error al procesar el pago. Intenta de nuevo más tarde.",
-      );
-      setIsLoading(false);
     }
+
+    // Si llegamos aquí, todos los intentos fallaron
+    setIsLoading(false);
+    setErrorModal({
+      isOpen: true,
+      title: "Error al conectar con Mercado Pago",
+      message:
+        "Ocurrió un error, en estos momentos no se puede hacer un regalo mediante tarjeta de débito y crédito.\n\nPuedes intentar con otras opciones:\n• Transferencia bancaria\n• Yape\n• Plin",
+    });
   };
 
   const handleContinue = (currentStep: 1 | 2) => {
@@ -213,6 +255,27 @@ export default function WeddingGiftFlow() {
 
   return (
     <div className="h-dvh overflow-hidden bg-fondo font-sans flex items-center justify-center">
+      {/* Error Modal */}
+      {errorModal.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-lg">
+            <h2 className="text-xl font-semibold text-primario mb-3">
+              {errorModal.title}
+            </h2>
+            <p className="text-primario mb-6 whitespace-pre-line text-sm leading-relaxed">
+              {errorModal.message}
+            </p>
+            <button
+              onClick={() =>
+                setErrorModal({ isOpen: false, title: "", message: "" })
+              }
+              className="w-full bg-button text-texto-button font-semibold py-3 rounded-xl transition-colors duration-200"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
       {/* Loading Screen */}
       {isLoading && (
         <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
