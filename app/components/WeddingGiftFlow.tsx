@@ -606,7 +606,7 @@ export default function WeddingGiftFlow() {
             type="button"
             onClick={() => handleContinue(1)}
             disabled={isStep1ContinueDisabled}
-            className="w-full font-semibold py-4 rounded-xl transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer disabled:cursor-not-allowed disabled:bg-button-deshabilitado disabled:text-texto-button-deshabilitado"
+            className="w-full font-semibold py-4 transition-colors duration-200 bg-button text-lg text-texto-button cursor-pointer disabled:cursor-not-allowed disabled:bg-button-deshabilitado disabled:text-texto-button-deshabilitado"
           >
             Continuar
           </button>

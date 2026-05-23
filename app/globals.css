@@ -3,7 +3,7 @@
 :root {
   --background: #f2f1eb;
   --foreground: #685F5D;
-  --primary: #895457;
+  --primary: #a66d6f;
   --primary-foreground: #f2f1eb;
   --muted: #EBDEDB;
   --muted-foreground: #BCACA8;
@@ -16,7 +16,7 @@
   --fondo-secundario: #EBDEDB;
   --primario: #685F5D;
   --secundario: #BCACA8;
-  --button: #C58689;
+  --button: #a66d6f;
   --button-deshabilitado: #E6C7C9;
   --texto-button: #f2f1eb;
   --texto-button-deshabilitado: #9A7A7C;
