@@ -436,7 +436,7 @@ export default function WeddingGiftFlow() {
       setTimeout(() => {
         setIsLoading(false);
         setStep(2);
-      }, 1000);
+      }, 500);
     } else if (currentStep === 2) {
       createPreference();
     }
@@ -448,7 +448,7 @@ export default function WeddingGiftFlow() {
       setTimeout(() => {
         setIsLoading(false);
         setStep(1);
-      }, 600);
+      }, 500);
     }
   };
 
