@@ -224,9 +224,6 @@ export default function WeddingGiftFlow() {
         }
 
         window.location.href = data.init_point;
-        
-        setIsLoading(false);
-
         return;
       } catch (error) {
         // Detectar si es un error de conexión/internet
