@@ -18,6 +18,31 @@ export default function WeddingGiftFlow() {
   const inputRef = useRef<HTMLInputElement>(null);
   const measureSpanRef = useRef<HTMLSpanElement>(null);
 
+  // Generador de UUID (fallback si no existe crypto.randomUUID)
+  const generateUUID = () => {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+
+    // fallback simple (no criptográficamente seguro)
+    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+  };
+
+  // Obtener o crear un id persistente del navegador
+  const getOrCreateBrowserId = () => {
+    const key = "mp_browser_id";
+    if (typeof window === "undefined") return "";
+    try {
+      const existing = localStorage.getItem(key);
+      if (existing) return existing;
+      const id = generateUUID();
+      localStorage.setItem(key, id);
+      return id;
+    } catch (e) {
+      return "";
+    }
+  };
   const numericAmount = parseInt(amount.replace(/,/g, "") || "0");
   const formattedAmount = numericAmount.toLocaleString("es-PE");
   const isStep1ContinueDisabled = numericAmount <= 0;
@@ -161,6 +186,17 @@ export default function WeddingGiftFlow() {
 
     setIsLoading(true);
 
+    // Crear y persistir una nueva external reference para este intento
+    const externalReference = generateUUID();
+    try {
+      localStorage.setItem("mp_external_reference", externalReference);
+    } catch (e) {
+      // ignorar si localStorage no está disponible
+    }
+
+    // Obtener o crear identificador persistente del navegador
+    const browserId = getOrCreateBrowserId();
+
     const maxRetries = 5;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -175,6 +211,8 @@ export default function WeddingGiftFlow() {
             montoRegalo: String(numericAmount),
             montoComisionMP: String(serviceFee),
             nombre: name,
+            external_reference: externalReference,
+            browser_id: browserId,
           }),
         });
 
@@ -184,7 +222,6 @@ export default function WeddingGiftFlow() {
           throw new Error(data.error || "No se pudo crear la preferencia");
         }
 
-        alert("Redirigiendo a Mercado Pago...");
         window.location.href = data.init_point;
         return;
       } catch (error) {
@@ -223,8 +260,7 @@ export default function WeddingGiftFlow() {
     setErrorModal({
       isOpen: true,
       title: "Error al conectar con Mercado Pago",
-      message:
-        "Ocurrió un error, en estos momentos no se puede hacer un regalo mediante tarjeta de débito y crédito.\n\nPuedes intentar con otras opciones:\n• Transferencia bancaria\n• Yape\n• Plin",
+      message: `Ocurrió un error, en estos momentos no se puede hacer un obsequio mediante tarjeta de débito y crédito.\n\nPuede intentar con otras opciones:\n• Transferencia bancaria\n• Yape\n• Plin\n\nID del navegador: ${browserId}\nReferencia externa: ${externalReference}`,
     });
   };
 
