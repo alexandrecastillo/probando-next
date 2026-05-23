@@ -256,6 +256,18 @@ export default function WeddingGiftFlow() {
 
     setIsLoading(true);
 
+    // Verificar conexión de red antes de intentar
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      setIsLoading(false);
+      setErrorModal({
+        isOpen: true,
+        title: "Sin conexión a internet",
+        message:
+          "No pudimos conectar con el servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.",
+      });
+      return;
+    }
+
     // Crear una nueva external reference para este intento
     const externalReference = generateUUID();
 

@@ -27,23 +27,50 @@ export default function FailurePage() {
           return;
         }
 
-        // Call backend to check payment by external_reference
-        const res = await fetch(`/api/mercadopago/check?external_reference=${encodeURIComponent(external)}`);
-        if (!res.ok) {
-          // Backend failed — restore and show generic error modal
+        // Validar conexión antes de intentar
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
           try {
-            localStorage.setItem("mp_restore", "1");
-            localStorage.setItem(
-              "mp_error_modal",
-              JSON.stringify({ title: "Error al verificar pago", message: "Ocurrió un error verificando el estado del pago. Puedes intentar nuevamente o usar otra forma de pago." }),
-            );
+            localStorage.setItem("mp_error_modal", JSON.stringify({ title: "Sin conexión a internet", message: "No pudimos verificar el estado del pago porque no hay conexión a internet. Por favor verifica tu conexión e intenta nuevamente." }));
           } catch (e) {}
           router.replace("/");
           return;
         }
 
-        const json = await res.json();
-        const results = json?.data?.results || [];
+        // Intentar llamar al backend hasta 5 veces con backoff
+        const maxRetries = 5;
+        let json = null;
+        let results = [];
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            const res = await fetch(`/api/mercadopago/check?external_reference=${encodeURIComponent(external)}`);
+            if (!res.ok) throw new Error(`Status ${res.status}`);
+            json = await res.json();
+            results = json?.data?.results || [];
+            break;
+          } catch (err) {
+            // Si durante los intentos perdemos la conexión, mostrar modal de sin conexión y salir
+            if (typeof navigator !== "undefined" && !navigator.onLine) {
+              try {
+                localStorage.setItem("mp_error_modal", JSON.stringify({ title: "Sin conexión a internet", message: "No pudimos verificar el estado del pago porque no hay conexión a internet. Por favor verifica tu conexión e intenta nuevamente." }));
+              } catch (e) {}
+              router.replace("/");
+              return;
+            }
+
+            console.error(`Intento ${attempt} para verificar pago falló:`, err);
+            if (attempt < maxRetries) {
+              await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+              continue;
+            }
+            // Último intento falló: restaurar y mostrar error genérico
+            try {
+              localStorage.setItem("mp_restore", "1");
+              localStorage.setItem("mp_error_modal", JSON.stringify({ title: "Error al verificar pago", message: "Ocurrió un error verificando el estado del pago. Puedes intentar nuevamente o usar otra forma de pago." }));
+            } catch (e) {}
+            router.replace("/");
+            return;
+          }
+        }
 
         if (!results || results.length === 0) {
           // No payment found: restore previous attempt and go back to step 2
