@@ -463,7 +463,7 @@ export default function WeddingGiftFlow() {
         <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
           <div className="flex flex-col items-center gap-6">
             <div className="relative w-16 h-16">
-			       <div className="w-10 h-10 rounded-full border-4 border-y-primario border-l-primario animate-spin">
+			       <div className="w-10 h-10 rounded-full border-4 border-y-zinc-700 border-l-zinc-700 animate-spin">
               </div>
             </div>
             <p className="text-primario text-lg font-medium">Continuar...</p>
