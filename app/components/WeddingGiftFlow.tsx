@@ -572,7 +572,7 @@ export default function WeddingGiftFlow() {
                   placeholder="Ingrese su nombre"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="w-full px-4 py-3 bg-fondo text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 overflow-hidden text-ellipsis whitespace-nowrap"
                 />
               </div>
 
