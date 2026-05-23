@@ -144,13 +144,14 @@ export default function FailurePage() {
 
   return (
     <main className="min-h-dvh flex items-center justify-center bg-fondo px-6 py-12">
-      <div className="max-w-lg w-full rounded-3xl border border-secundario bg-white p-8 shadow-lg flex flex-col items-center">
-        <div className="relative w-16 h-16 mb-6">
-          <div className="absolute inset-0 border-4 border-primario/20 rounded-full"></div>
-          <div className="absolute inset-0 border-4 border-primario border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 border-4 border-primario/20 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-primario border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <p className="text-primario text-lg font-medium">Cargando...</p>
         </div>
-        <h1 className="text-2xl font-semibold text-primario">Verificando pago</h1>
-        <p className="mt-4 text-primario text-center">Estamos revisando el estado del pago. Serás redirigido en breve.</p>
       </div>
     </main>
   );
