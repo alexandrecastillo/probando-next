@@ -94,8 +94,8 @@ export default function WeddingGiftFlow() {
 
     const checkReturn = () => {
       try {
-        const externalRef = localStorage.getItem("mp_external_reference");
-        if (externalRef) {
+        const saved = localStorage.getItem("mp_saved_attempt");
+        if (saved) {
           setIsLoading(false);
         }
       } catch (e) {
@@ -256,13 +256,8 @@ export default function WeddingGiftFlow() {
 
     setIsLoading(true);
 
-    // Crear y persistir una nueva external reference para este intento
+    // Crear una nueva external reference para este intento
     const externalReference = generateUUID();
-    try {
-      localStorage.setItem("mp_external_reference", externalReference);
-    } catch (e) {
-      // ignorar si localStorage no está disponible
-    }
 
     // Obtener o crear identificador persistente del navegador
     const browserId = getOrCreateBrowserId();

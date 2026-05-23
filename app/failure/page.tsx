@@ -13,7 +13,7 @@ export default function FailurePage() {
         let external = null;
         if (typeof window !== "undefined") {
           const qp = new URLSearchParams(window.location.search);
-          external = qp.get("external_reference") || localStorage.getItem("mp_external_reference");
+          external = qp.get("external_reference");
         } else {
           external = null;
         }
