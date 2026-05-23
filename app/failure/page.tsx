@@ -182,7 +182,7 @@ export default function FailurePage() {
     <main className="min-h-dvh flex items-center justify-center bg-fondo px-6 py-12">
       <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
         <div className="flex flex-col items-center gap-6">
-			    <div className="w-10 h-10 rounded-full border-4 border-y-zinc-700 border-l-zinc-700 animate-spin">
+			    <div className="w-10 h-10 rounded-full border-4 border-y-primario/20 border-y-primario animate-spin">
           </div>
           <p className="text-primario text-lg font-medium">Cargando...</p>
         </div>
