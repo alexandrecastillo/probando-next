@@ -126,8 +126,8 @@ export async function POST(request) {
         date_approved: payment.date_approved,
       });
 
-      await sendPagoDiscord(
-        `🎉 Nuevo pago recibido!\n\n` +
+      // Construir mensaje base común
+      const baseMessage =
         `**ID:** ${payment.id}\n` +
         `**Estado:** ${payment.status}\n` +
         `**Monto:** S/ ${payment.transaction_amount}\n` +
@@ -138,8 +138,22 @@ export async function POST(request) {
         `**Monto regalo:** S/ ${payment.metadata.monto_regalo}\n` +
         `**Monto comisión MP:** S/ ${payment.metadata.monto_comision_mp}\n` +
         `**Nombre:** ${payment.metadata.nombre || 'Anónimo'}\n` +
-        `**Mensaje:** ${payment.metadata.mensaje || 'Sin mensaje'}\n`
-      );
+        `**Mensaje:** ${payment.metadata.mensaje || 'Sin mensaje'}\n`;
+
+      // Separar según estado del pago
+      if (payment.status === 'approved') {
+        // Pago aprobado exitosamente
+        await sendPagoDiscord(`🎉 Nuevo pago recibido!\n\n${baseMessage}`);
+      } else {
+        // Pago rechazado, pendiente o en otro estado
+        const statusLabel =
+          payment.status === 'rejected' ? '❌ Pago rechazado' :
+          payment.status === 'pending' ? '⏳ Pago pendiente' :
+          payment.status === 'cancelled' ? '🚫 Pago cancelado' :
+          `⚠️ Pago con estado: ${payment.status}`;
+
+        await sendErrorDiscord(`${statusLabel}\n\n${baseMessage}`);
+      }
 
       console.log(`Pago con estado ${payment.status} recibido para seguimiento`);
     }
