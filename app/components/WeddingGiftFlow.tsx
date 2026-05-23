@@ -49,11 +49,34 @@ export default function WeddingGiftFlow() {
 
   
   const adjustInputWidth = useCallback(() => {
-    if (!inputRef.current || !measureSpanRef.current) return;
-    const value = inputRef.current.value || "0";
-    measureSpanRef.current.textContent = value;
-    const width = measureSpanRef.current.offsetWidth;
-    inputRef.current.style.width = width + (value === "1" ? 20 : 5) + "px";
+    const input = inputRef.current;
+    const measure = measureSpanRef.current;
+    if (!input || !measure) return;
+
+    const value = input.value || "0";
+    // Escribir en el span (por compatibilidad) — mantiene semántica existente
+    measure.textContent = value;
+
+    // Intentar medir con canvas usando estilos computados (más fiable con fuentes web)
+    try {
+      const cs = window.getComputedStyle(input);
+      const font = `${cs.fontStyle} ${cs.fontVariant} ${cs.fontWeight} ${cs.fontSize} / ${cs.lineHeight} ${cs.fontFamily}`;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.font = font;
+        const metrics = ctx.measureText(value);
+        const width = Math.ceil(metrics.width);
+        const padding = value === "1" ? 20 : 5;
+        input.style.width = width + padding + "px";
+        return;
+      }
+    } catch (e) {
+      // fallback al método anterior
+    }
+
+    const width = measure.offsetWidth || 0;
+    input.style.width = width + (value === "1" ? 20 : 5) + "px";
   }, []);
 
   useEffect(() => {
