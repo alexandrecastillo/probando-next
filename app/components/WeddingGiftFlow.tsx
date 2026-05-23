@@ -504,9 +504,8 @@ export default function WeddingGiftFlow() {
                   className="text-primario"
                 ></path>
               </svg>
-
             </div>
-            <p className="text-primario text-lg font-medium">Continuar...</p>
+            <p className="text-primario text-lg font-medium">Cargando...</p>
           </div>
         </div>
       )}
