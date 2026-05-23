@@ -30,7 +30,14 @@ export default function FailurePage() {
         // Validar conexión antes de intentar
         if (typeof navigator !== "undefined" && !navigator.onLine) {
           try {
-            localStorage.setItem("mp_error_modal", JSON.stringify({ title: "Sin conexión a internet", message: "No pudimos verificar el estado del pago porque no hay conexión a internet. Por favor verifica tu conexión e intenta nuevamente." }));
+            localStorage.setItem(
+              "mp_error_modal",
+              JSON.stringify({
+                title: "Sin conexión a internet",
+                message:
+                  "No pudimos verificar el estado del pago porque no hay conexión a internet. Por favor verifica tu conexión e intenta nuevamente.",
+              }),
+            );
           } catch (e) {}
           router.replace("/");
           return;
@@ -42,7 +49,9 @@ export default function FailurePage() {
         let results = [];
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
           try {
-            const res = await fetch(`/api/mercadopago/check?external_reference=${encodeURIComponent(external)}`);
+            const res = await fetch(
+              `/api/mercadopago/check?external_reference=${encodeURIComponent(external)}`,
+            );
             if (!res.ok) throw new Error(`Status ${res.status}`);
             json = await res.json();
             results = json?.data?.results || [];
@@ -51,7 +60,14 @@ export default function FailurePage() {
             // Si durante los intentos perdemos la conexión, mostrar modal de sin conexión y salir
             if (typeof navigator !== "undefined" && !navigator.onLine) {
               try {
-                localStorage.setItem("mp_error_modal", JSON.stringify({ title: "Sin conexión a internet", message: "No pudimos verificar el estado del pago porque no hay conexión a internet. Por favor verifica tu conexión e intenta nuevamente." }));
+                localStorage.setItem(
+                  "mp_error_modal",
+                  JSON.stringify({
+                    title: "Sin conexión a internet",
+                    message:
+                      "No pudimos verificar el estado del pago porque no hay conexión a internet. Por favor verifica tu conexión e intenta nuevamente.",
+                  }),
+                );
               } catch (e) {}
               router.replace("/");
               return;
@@ -59,13 +75,22 @@ export default function FailurePage() {
 
             console.error(`Intento ${attempt} para verificar pago falló:`, err);
             if (attempt < maxRetries) {
-              await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+              await new Promise((resolve) =>
+                setTimeout(resolve, 1000 * attempt),
+              );
               continue;
             }
             // Último intento falló: restaurar y mostrar error genérico
             try {
               localStorage.setItem("mp_restore", "1");
-              localStorage.setItem("mp_error_modal", JSON.stringify({ title: "Error al verificar pago", message: "Ocurrió un error verificando el estado del pago. Puedes intentar nuevamente o usar otra forma de pago." }));
+              localStorage.setItem(
+                "mp_error_modal",
+                JSON.stringify({
+                  title: "Error al verificar pago",
+                  message:
+                    "Ocurrió un error verificando el estado del pago. Puedes intentar nuevamente o usar otra forma de pago.",
+                }),
+              );
             } catch (e) {}
             router.replace("/");
             return;
@@ -93,8 +118,12 @@ export default function FailurePage() {
               const saved = {
                 nombre: metadata.nombre || "",
                 mensaje: metadata.mensaje || "",
-                montoRegalo: metadata.monto_regalo || metadata.montoRegalo || null,
-                montoComisionMP: metadata.monto_comision_mp || metadata.montoComisionMP || null,
+                montoRegalo:
+                  metadata.monto_regalo || metadata.montoRegalo || null,
+                montoComisionMP:
+                  metadata.monto_comision_mp ||
+                  metadata.montoComisionMP ||
+                  null,
                 total: payment?.transaction_amount || null,
                 formattedAmount: metadata.monto_regalo
                   ? Number(metadata.monto_regalo).toLocaleString("es-PE")
@@ -120,7 +149,11 @@ export default function FailurePage() {
             localStorage.setItem("mp_restore", "1");
             localStorage.setItem(
               "mp_error_modal",
-              JSON.stringify({ title: "Tu regalo no se completó", message: "Detectamos un intento de pago. Intenta nuevamente o usa otra forma de pago." }),
+              JSON.stringify({
+                title: "Tu regalo no se completó",
+                message:
+                  "Detectamos un intento de pago. Intenta nuevamente o usa otra forma de pago.",
+              }),
             );
           } catch (e) {}
         }
@@ -132,7 +165,10 @@ export default function FailurePage() {
           localStorage.setItem("mp_restore", "1");
           localStorage.setItem(
             "mp_error_modal",
-            JSON.stringify({ title: "Tu regalo no se completó", message: "Ocurrió un error inesperado. Intenta nuevamente." }),
+            JSON.stringify({
+              title: "Tu regalo no se completó",
+              message: "Ocurrió un error inesperado. Intenta nuevamente.",
+            }),
           );
         } catch (e) {}
         router.replace("/");
@@ -146,13 +182,51 @@ export default function FailurePage() {
     <main className="min-h-dvh flex items-center justify-center bg-fondo px-6 py-12">
       <div className="flex flex-col h-full max-w-md mx-auto w-full items-center justify-center">
         <div className="flex flex-col items-center gap-6">
-          <div className="relative w-16 h-16">
-            <div className="absolute inset-0 border-4 border-primario/20 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-primario border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          {/* Material Design Circular Progress */}
+          <svg className="w-16 h-16 animate-spin" viewBox="0 0 50 50">
+            <circle
+              className="stroke-primario/20"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              strokeWidth="4"
+            />
+            <circle
+              className="stroke-primario"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              strokeWidth="4"
+              strokeDasharray="80, 200"
+              strokeDashoffset="0"
+              strokeLinecap="round"
+              style={{
+                animation: "material-spinner 1.4s ease-in-out infinite",
+              }}
+            />
+          </svg>
           <p className="text-primario text-lg font-medium">Cargando...</p>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes material-spinner {
+          0% {
+            stroke-dasharray: 1, 200;
+            stroke-dashoffset: 0;
+          }
+          50% {
+            stroke-dasharray: 100, 200;
+            stroke-dashoffset: -15;
+          }
+          100% {
+            stroke-dasharray: 100, 200;
+            stroke-dashoffset: -125;
+          }
+        }
+      `}</style>
     </main>
   );
 }
