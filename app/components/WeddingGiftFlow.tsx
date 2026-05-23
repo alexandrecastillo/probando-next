@@ -590,7 +590,7 @@ export default function WeddingGiftFlow() {
                   id="message"
                   maxLength={150}
                   rows={3}
-                  placeholder="Escribe un mensaje para los novios..."
+                  placeholder="Escriba un mensaje para los novios..."
                   value={messageInput}
                   onChange={handleMessageChange}
                   className="w-full px-4 py-3 bg-fondo-secundario text-primario placeholder-secundario outline-none focus:ring-2 focus:ring-primario transition-all duration-200 resize-none"
