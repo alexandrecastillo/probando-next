@@ -57,7 +57,6 @@ export default function WeddingGiftFlow() {
   }, []);
 
   useEffect(() => {
-    setIsLoading(false);  
     adjustInputWidth();
   }, [amount, adjustInputWidth]);
 
@@ -88,6 +87,42 @@ export default function WeddingGiftFlow() {
     const formatted = parseInt(numValue).toLocaleString("es-PE");
     setAmount(formatted);
   };
+
+  // Detectar cuando el usuario vuelve a la pestaña (back/return) desde otro flujo
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkReturn = () => {
+      try {
+        const externalRef = localStorage.getItem("mp_external_reference");
+        if (externalRef) {
+          setErrorModal({
+            isOpen: true,
+            title: "Has vuelto a la pestaña",
+            message: `Detectamos que regresaste al sitio.\nReferencia externa: ${externalRef}\nID del navegador: ${getOrCreateBrowserId()}\n\nSi llegaste desde Mercado Pago, revisa el estado del pago o intenta nuevamente.`,
+          });
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") checkReturn();
+    };
+
+    window.addEventListener("focus", checkReturn);
+    window.addEventListener("pageshow", checkReturn);
+    window.addEventListener("popstate", checkReturn);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.removeEventListener("focus", checkReturn);
+      window.removeEventListener("pageshow", checkReturn);
+      window.removeEventListener("popstate", checkReturn);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
 
   const moveMoneyCursorToEnd = () => {
     const input = inputRef.current;
