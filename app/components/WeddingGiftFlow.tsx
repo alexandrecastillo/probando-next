@@ -567,7 +567,7 @@ export default function WeddingGiftFlow() {
         <div className="flex-1 px-6">
           <div className="flex flex-col min-h-full">
             {/* Input de monto */}
-            <div className="flex-1 flex items-center justify-center">
+            <div onClick={moveMoneyCursorToEnd} className="flex-1 flex items-center justify-center">
               <div className="relative flex items-start">
                 <span className="text-2xl font-medium text-primario mr-1 mt-1">
                   S/
@@ -650,7 +650,7 @@ export default function WeddingGiftFlow() {
             }}
             disabled={isStep1ContinueDisabled}
             aria-disabled={isStep1ContinueDisabled}
-            className={`w-full font-semibold py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? 'bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed' : 'bg-button text-texto-button cursor-pointer'}`}
+            className={`w-full font-medium py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? 'bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed' : 'bg-button text-texto-button cursor-pointer'}`}
           >
             Continuar
           </button>
