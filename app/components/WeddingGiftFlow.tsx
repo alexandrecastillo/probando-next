@@ -564,7 +564,7 @@ export default function WeddingGiftFlow() {
         <div className="relative px-6 pt-8 pb-6">
           <div className="text-center">
             <h1 className="text-md text-primario">Regalo de Boda</h1>
-            <p className="text-4xl font-semibold text-primario mt-1 font-monte-carlo">
+            <p className="text-3xl font-semibold text-primario mt-1 font-monte-carlo">
               Briana y Alexandre
             </p>
           </div>
@@ -595,13 +595,13 @@ export default function WeddingGiftFlow() {
                     onClick={moveMoneyCursorToEnd}
                     onSelect={moveMoneyCursorToEnd}
                     onBlur={handleMoneyBlur}
-                    className={`text-6xl font-semibold text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
+                    className={`text-6xl font-medium text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
                       numericAmount > 0 ? "text-primario" : "text-secundario"
                     }`}
                   />
                   <span
                     ref={measureSpanRef}
-                    className="invisible text-6xl font-semibold absolute pointer-events-none whitespace-pre"
+                    className="invisible text-6xl font-medium absolute pointer-events-none whitespace-pre"
                   />
                 </div>
               </div>
@@ -709,7 +709,7 @@ export default function WeddingGiftFlow() {
                 <span className="text-lg font-medium text-primario mr-1 mt-1">
                   S/
                 </span>
-                <span className="text-5xl font-semibold text-center text-primario py-4">
+                <span className="text-5xl font-medium text-center text-primario py-4">
                   {formattedAmount}
                 </span>
               </div>
