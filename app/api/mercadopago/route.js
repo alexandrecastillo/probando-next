@@ -9,7 +9,7 @@ export async function POST(request) {
   try {
     const url = new URL(request.url);
     const body = await request.json();
-    const { mensaje, montoRegalo, montoComisionMP, nombre, external_reference, browser_id } = body;
+    const { mensaje, montoRegalo, montoComisionMP, montoNetoRecibido, nombre, external_reference, browser_id } = body;
 
     // ✅ Validación correcta
     if (!montoRegalo || !montoComisionMP) {
@@ -54,8 +54,9 @@ export async function POST(request) {
         metadata: {
           nombre: nombre || "",
           mensaje: mensaje || "",
-          montoRegalo: montoRegalo.toString(),
-          montoComisionMP: montoComisionMP.toString(),
+          monto_regalo: montoRegalo.toString(),
+          monto_comision_mp: montoComisionMP.toString(),
+          monto_neto_recibido: montoNetoRecibido ? montoNetoRecibido.toString() : "",
           browser_id: browser_id || "",
         },
       },

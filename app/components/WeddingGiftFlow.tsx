@@ -108,7 +108,7 @@ export default function WeddingGiftFlow() {
     };
   }, [adjustInputWidth]);
 
-  const { totalToCharge, commission } = useMemo(
+  const { totalToCharge, commission, netReceived } = useMemo(
     () => calculatePrice(numericAmount),
     [numericAmount],
   );
@@ -272,23 +272,26 @@ export default function WeddingGiftFlow() {
 
     let assume = 1;
 
-    if (net >= 150) {
-      assume = 0.75;
-    } else if (net >= 300) {
+    if (net >= 300) {
       assume = 0.5;
+    } else if (net >= 150) {
+      assume = 0.75;
     }
 
-    // real commission
+    // real commission share assumed by the payer
     const r = rate * (1 + igv);
     const f = fixed * (1 + igv);
 
     const total = (net + assume * f) / (1 - assume * r);
     const commission = total - net;
+    const fee = assume * (r * total + f);
+    const netReceived = total - fee;
 
     return {
       net,
       totalToCharge: +total.toFixed(2),
       commission: +commission.toFixed(2),
+      netReceived: +netReceived.toFixed(2),
     };
   }
 
@@ -397,6 +400,7 @@ export default function WeddingGiftFlow() {
         montoRegalo: numericAmount,
         montoComisionMP: serviceFee,
         total: total,
+        netReceived,
         formattedAmount: formattedAmount,
         externalReference,
         browserId,
@@ -419,6 +423,7 @@ export default function WeddingGiftFlow() {
             mensaje: message,
             montoRegalo: String(numericAmount),
             montoComisionMP: String(serviceFee),
+            montoNetoRecibido: String(netReceived),
             nombre: name,
             external_reference: externalReference,
             browser_id: browserId,

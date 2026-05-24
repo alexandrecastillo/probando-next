@@ -137,6 +137,7 @@ export async function POST(request) {
         `**Metadata:** -------------------------\n` +
         `**Monto regalo:** S/ ${payment.metadata.monto_regalo}\n` +
         `**Monto comisión MP:** S/ ${payment.metadata.monto_comision_mp}\n` +
+        `**Monto neto recibido:** S/ ${payment.metadata.monto_neto_recibido || 'N/A'}\n` +
         `**Nombre:** ${payment.metadata.nombre || 'Anónimo'}\n` +
         `**Mensaje:** ${payment.metadata.mensaje || 'Sin mensaje'}\n`;
 
