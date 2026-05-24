@@ -189,7 +189,9 @@ export default function WeddingGiftFlow() {
       .split(/(\s+)/)
       .map((token) => {
         if (/\s+/.test(token)) return token;
-        return token.length > 0 ? token[0].toUpperCase() + token.slice(1) : token;
+        return token.length > 0
+          ? token[0].toUpperCase() + token.slice(1)
+          : token;
       })
       .join("");
   };
@@ -206,7 +208,9 @@ export default function WeddingGiftFlow() {
     }
   };
 
-  const handleMessageKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleMessageKeyDown = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
     if (e.key === "Enter") {
       e.preventDefault();
       (e.target as HTMLTextAreaElement).blur();
@@ -559,12 +563,10 @@ export default function WeddingGiftFlow() {
         {/* Header */}
         <div className="relative px-6 pt-8 pb-6">
           <div className="text-center">
-            <p className="text-2xl text-primario font-monte-carlo">
+            <h1 className="text-md text-primario">Regalo de Boda</h1>
+            <p className="text-3xl font-semibold text-primario mt-1 font-monte-carlo">
               Briana y Alexandre
             </p>
-            <h1 className="text-2xl font-bold text-primario">
-              Regalo de Boda
-            </h1>
           </div>
         </div>
 
@@ -572,7 +574,10 @@ export default function WeddingGiftFlow() {
         <div className="flex-1 px-6">
           <div className="flex flex-col min-h-full">
             {/* Input de monto */}
-            <div onClick={moveMoneyCursorToEnd} className="flex-1 flex items-center justify-center">
+            <div
+              onClick={moveMoneyCursorToEnd}
+              className="flex-1 flex items-center justify-center"
+            >
               <div className="relative flex items-start">
                 <span className="text-2xl font-medium text-primario mr-1 mt-1">
                   S/
@@ -596,7 +601,7 @@ export default function WeddingGiftFlow() {
                   />
                   <span
                     ref={measureSpanRef}
-                    className="invisible text-6xl font-bold absolute pointer-events-none whitespace-pre"
+                    className="invisible text-6xl font-semibold absolute pointer-events-none whitespace-pre"
                   />
                 </div>
               </div>
@@ -655,7 +660,7 @@ export default function WeddingGiftFlow() {
             }}
             disabled={isStep1ContinueDisabled}
             aria-disabled={isStep1ContinueDisabled}
-            className={`w-full font-semibold text-lg py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? 'bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed' : 'bg-button text-texto-button cursor-pointer'}`}
+            className={`w-full font-semibold text-lg py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? "bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed" : "bg-button text-texto-button cursor-pointer"}`}
           >
             Continuar
           </button>
@@ -688,12 +693,10 @@ export default function WeddingGiftFlow() {
           </button>
 
           <div className="text-center">
-            <p className="text-md text-primario font-monte-carlo">
+            <h1 className="text-md text-primario">Regalo de Boda</h1>
+            <p className="text-3xl font-semibold text-primario mt-1 font-monte-carlo">
               Briana y Alexandre
             </p>
-            <h1 className="text-2xl font-semibold mt-1 text-primario">
-              Regalo de Boda
-            </h1>
           </div>
         </div>
 
@@ -706,7 +709,7 @@ export default function WeddingGiftFlow() {
                 <span className="text-lg font-medium text-primario mr-1 mt-1">
                   S/
                 </span>
-                <span className="text-5xl font-bold text-center text-primario py-4">
+                <span className="text-5xl font-semibold text-center text-primario py-4">
                   {formattedAmount}
                 </span>
               </div>
