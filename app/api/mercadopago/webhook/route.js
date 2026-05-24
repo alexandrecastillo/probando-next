@@ -144,8 +144,8 @@ export async function POST(request) {
         `**Monto regalo:** S/ ${getMeta('monto_regalo', 'montoRegalo')}\n` +
         `**Monto neto recibido:** S/ ${getMeta('monto_neto_recibido', 'montoNetoRecibido')}\n` +
         `**Monto comision total:** S/ ${getMeta('monto_full_fee', 'montoFullFee')}\n` +
-        `**Monto comisión asumida por invitado:** S/ ${getMeta('monto_comision_mp', 'montoComisionMP')}\n` +
-        `**Monto comision asumida por nosotros:** ${getMeta('monto_my_assume', 'montoMyAssume')}\n` +
+        `**Monto comisión de invitado:** S/ ${getMeta('monto_comision_mp', 'montoComisionMP')}\n` +
+        `**Monto comision de nosotros:** S/ ${getMeta('monto_my_assume', 'montoMyAssume')}\n` +
         `**Nombre:** ${nameMeta || 'Anónimo'}\n` +
         `**Mensaje:** ${messageMeta || 'Sin mensaje'}\n`;
 
