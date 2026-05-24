@@ -175,6 +175,7 @@ export default function WeddingGiftFlow() {
     const input = inputRef.current;
     if (!input) return;
 
+    input.focus();
     const position = input.value.length;
     input.setSelectionRange(position, position);
   };
