@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playwrite_GB_S, MonteCarlo, Poppins, Elms_Sans, Montserrat } from "next/font/google";
+import { Geist, Geist_Mono, Playwrite_GB_S, MonteCarlo, Poppins, Elms_Sans, Montserrat, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,10 +22,10 @@ const monteCarlo = MonteCarlo({
   weight: ["400"],
 });
 
-const elmsSans = Elms_Sans({
-  variable: "--font-elms-sans",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"]
 });
 
 const montserrat = Montserrat({
@@ -48,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${playwriteGB.variable} ${monteCarlo.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playwriteGB.variable} ${monteCarlo.variable} ${montserrat.variable} ${instrumentSans.variable} h-full antialiased`}
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
