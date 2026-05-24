@@ -590,7 +590,7 @@ export default function WeddingGiftFlow() {
                     onClick={moveMoneyCursorToEnd}
                     onSelect={moveMoneyCursorToEnd}
                     onBlur={handleMoneyBlur}
-                    className={`text-6xl font-bold text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
+                    className={`text-6xl font-semibold text-center bg-transparent border-none outline-none focus:ring-0 p-0 transition-colors ${
                       numericAmount > 0 ? "text-primario" : "text-secundario"
                     }`}
                   />
@@ -655,7 +655,7 @@ export default function WeddingGiftFlow() {
             }}
             disabled={isStep1ContinueDisabled}
             aria-disabled={isStep1ContinueDisabled}
-            className={`w-full font-medium py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? 'bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed' : 'bg-button text-texto-button cursor-pointer'}`}
+            className={`w-full font-semibold text-lg py-4 transition-colors duration-200 ${isStep1ContinueDisabled ? 'bg-button-deshabilitado text-texto-button-deshabilitado cursor-not-allowed' : 'bg-button text-texto-button cursor-pointer'}`}
           >
             Continuar
           </button>
