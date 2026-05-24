@@ -120,9 +120,9 @@ export default function WeddingGiftFlow() {
     // Remover todo lo que no sea número
     let numValue = value.replace(/\D/g, "");
 
-    // Limitar a 6 dígitos
-    if (numValue.length > 6) {
-      numValue = numValue.substring(0, 6);
+    // Limitar a 5 dígitos y máximo 25000
+    if (numValue.length > 5) {
+      numValue = numValue.substring(0, 5);
     }
 
     // Si está vacío, mostrar 0
@@ -132,10 +132,14 @@ export default function WeddingGiftFlow() {
     }
 
     // Remover ceros a la izquierda
-    numValue = parseInt(numValue).toString();
+    let numeric = parseInt(numValue, 10);
+    if (numeric > 25000) {
+      numeric = 25000;
+    }
+    numValue = numeric.toString();
 
     // Formatear con comas para miles
-    const formatted = parseInt(numValue).toLocaleString("es-PE");
+    const formatted = numeric.toLocaleString("es-PE");
     setAmount(formatted);
   };
 
