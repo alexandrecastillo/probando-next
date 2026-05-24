@@ -142,10 +142,10 @@ export async function POST(request) {
         `**Pagador:** ${payment.payer?.email || 'N/A'}\n` +
         `**Metadata:** -------------------------\n` +
         `**Monto regalo:** S/ ${getMeta('monto_regalo', 'montoRegalo')}\n` +
-        `**Monto comisión MP:** S/ ${getMeta('monto_comision_mp', 'montoComisionMP')}\n` +
         `**Monto neto recibido:** S/ ${getMeta('monto_neto_recibido', 'montoNetoRecibido')}\n` +
-        `**Monto full fee:** S/ ${getMeta('monto_full_fee', 'montoFullFee')}\n` +
-        `**Monto my assume:** ${getMeta('monto_my_assume', 'montoMyAssume')}\n` +
+        `**Monto comision total:** S/ ${getMeta('monto_full_fee', 'montoFullFee')}\n` +
+        `**Monto comisión asumida por invitado:** S/ ${getMeta('monto_comision_mp', 'montoComisionMP')}\n` +
+        `**Monto comision asumida por nosotros:** ${getMeta('monto_my_assume', 'montoMyAssume')}\n` +
         `**Nombre:** ${nameMeta || 'Anónimo'}\n` +
         `**Mensaje:** ${messageMeta || 'Sin mensaje'}\n`;
 
