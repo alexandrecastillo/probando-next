@@ -108,7 +108,7 @@ export default function WeddingGiftFlow() {
     };
   }, [adjustInputWidth]);
 
-  const { totalToCharge, commission, netReceived } = useMemo(
+  const { totalToCharge, commission, netReceived, fullFee, myAssume } = useMemo(
     () => calculatePrice(numericAmount),
     [numericAmount],
   );
@@ -404,6 +404,8 @@ export default function WeddingGiftFlow() {
         montoComisionMP: serviceFee,
         total: total,
         netReceived,
+        fullFee,
+        myAssume,
         formattedAmount: formattedAmount,
         externalReference,
         browserId,
@@ -427,6 +429,8 @@ export default function WeddingGiftFlow() {
             montoRegalo: String(numericAmount),
             montoComisionMP: String(serviceFee),
             montoNetoRecibido: String(netReceived),
+            montoFullFee: String(fullFee),
+            montoMyAssume: String(myAssume),
             nombre: name,
             external_reference: externalReference,
             browser_id: browserId,
