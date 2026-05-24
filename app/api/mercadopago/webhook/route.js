@@ -126,6 +126,12 @@ export async function POST(request) {
         date_approved: payment.date_approved,
       });
 
+      const metadata = payment.metadata || {};
+      const getMeta = (underscoreKey, camelKey) =>
+        metadata[underscoreKey] ?? metadata[camelKey] ?? 'N/A';
+      const nameMeta = metadata.nombre ?? metadata.nombre ?? 'Anónimo';
+      const messageMeta = metadata.mensaje ?? metadata.mensaje ?? 'Sin mensaje';
+
       // Construir mensaje base común
       const baseMessage =
         `**ID:** ${payment.id}\n` +
@@ -135,13 +141,13 @@ export async function POST(request) {
         `**Fecha:** ${payment.date_created}\n` +
         `**Pagador:** ${payment.payer?.email || 'N/A'}\n` +
         `**Metadata:** -------------------------\n` +
-        `**Monto regalo:** S/ ${payment.metadata.monto_regalo}\n` +
-        `**Monto comisión MP:** S/ ${payment.metadata.monto_comision_mp}\n` +
-        `**Monto neto recibido:** S/ ${payment.metadata.monto_neto_recibido || 'N/A'}\n` +
-        `**Monto full fee:** S/ ${payment.metadata.monto_full_fee || 'N/A'}\n` +
-        `**Monto my assume:** ${payment.metadata.monto_my_assume || 'N/A'}\n` +
-        `**Nombre:** ${payment.metadata.nombre || 'Anónimo'}\n` +
-        `**Mensaje:** ${payment.metadata.mensaje || 'Sin mensaje'}\n`;
+        `**Monto regalo:** S/ ${getMeta('monto_regalo', 'montoRegalo')}\n` +
+        `**Monto comisión MP:** S/ ${getMeta('monto_comision_mp', 'montoComisionMP')}\n` +
+        `**Monto neto recibido:** S/ ${getMeta('monto_neto_recibido', 'montoNetoRecibido')}\n` +
+        `**Monto full fee:** S/ ${getMeta('monto_full_fee', 'montoFullFee')}\n` +
+        `**Monto my assume:** ${getMeta('monto_my_assume', 'montoMyAssume')}\n` +
+        `**Nombre:** ${nameMeta}\n` +
+        `**Mensaje:** ${messageMeta}\n`;
 
       // Separar según estado del pago
       if (payment.status === 'approved') {
