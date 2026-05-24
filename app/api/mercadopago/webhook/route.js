@@ -146,8 +146,8 @@ export async function POST(request) {
         `**Monto neto recibido:** S/ ${getMeta('monto_neto_recibido', 'montoNetoRecibido')}\n` +
         `**Monto full fee:** S/ ${getMeta('monto_full_fee', 'montoFullFee')}\n` +
         `**Monto my assume:** ${getMeta('monto_my_assume', 'montoMyAssume')}\n` +
-        `**Nombre:** ${nameMeta}\n` +
-        `**Mensaje:** ${messageMeta}\n`;
+        `**Nombre:** ${nameMeta || 'Anónimo'}\n` +
+        `**Mensaje:** ${messageMeta || 'Sin mensaje'}\n`;
 
       // Separar según estado del pago
       if (payment.status === 'approved') {

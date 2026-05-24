@@ -279,7 +279,7 @@ export default function WeddingGiftFlow() {
     }
 
     // Cliente asume 'assume' de la comisión, yo asumo el resto
-    const myAssume = 1 - assume;
+    const myAssumePercent = 1 - assume;
     const r = rate * (1 + igv);
     const f = fixed * (1 + igv);
 
@@ -287,6 +287,7 @@ export default function WeddingGiftFlow() {
     const commission = total - net;
     const fullFee = r * total + f;
     const netReceived = total - fullFee;
+    const myAssume = fullFee * myAssumePercent;
 
     return {
       net,
