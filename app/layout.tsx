@@ -25,7 +25,7 @@ const monteCarlo = MonteCarlo({
 const elmsSans = Elms_Sans({
   variable: "--font-elms-sans",
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
