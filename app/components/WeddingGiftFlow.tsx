@@ -278,20 +278,23 @@ export default function WeddingGiftFlow() {
       assume = 0.75;
     }
 
-    // real commission share assumed by the payer
+    // Cliente asume 'assume' de la comisión, yo asumo el resto
+    const myAssume = 1 - assume;
     const r = rate * (1 + igv);
     const f = fixed * (1 + igv);
 
     const total = (net + assume * f) / (1 - assume * r);
     const commission = total - net;
-    const fee = assume * (r * total + f);
-    const netReceived = total - fee;
+    const fullFee = r * total + f;
+    const netReceived = total - fullFee;
 
     return {
       net,
       totalToCharge: +total.toFixed(2),
       commission: +commission.toFixed(2),
       netReceived: +netReceived.toFixed(2),
+      myAssume: +myAssume.toFixed(2),
+      fullFee: +fullFee.toFixed(2),
     };
   }
 
