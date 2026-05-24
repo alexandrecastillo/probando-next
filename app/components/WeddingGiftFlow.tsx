@@ -564,7 +564,7 @@ export default function WeddingGiftFlow() {
         <div className="relative px-6 pt-8 pb-6">
           <div className="text-center">
             <h1 className="text-md text-primario">Regalo de Boda</h1>
-            <p className="text-3xl font-semibold text-primario mt-1 font-monte-carlo">
+            <p className="text-4xl font-semibold text-primario mt-1 font-monte-carlo">
               Briana y Alexandre
             </p>
           </div>
